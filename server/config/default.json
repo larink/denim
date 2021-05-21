@@ -1,0 +1,4 @@
+{
+  "mongoURI": "fdsfds",
+  "jwtSecret": "sl_myJwtSecret"
+}
