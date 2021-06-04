@@ -2,11 +2,18 @@
   height: 100vh;
   min-height: 700px;
   // background-color: var(--quill-gray);
-  background-image: url('https://images.pexels.com/photos/6322920/pexels-photo-6322920.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
   background-position: top;
   background-repeat: no-repeat;
   background-size: cover;
   color: $white;
+
+  &.women {
+    background-image: url('https://images.pexels.com/photos/6322920/pexels-photo-6322920.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+  }
+
+  &.men {
+    background-image: url('https://images.pexels.com/photos/6492149/pexels-photo-6492149.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+  }
 
   &::before {
     content: '';

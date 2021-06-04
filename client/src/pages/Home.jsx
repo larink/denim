@@ -1,14 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import Products from '../components/Products'
+import { loadUser } from '../redux/actions/auth'
+import { fetchItems } from '../redux/actions/products'
 
 function Home() {
+  const dispatch = useDispatch()
+  const gender = useSelector(({ app }) => app.gender)
+  const sortBy = useSelector(({ filters }) => filters.sortBy)
+
+  // useEffect(() => {
+  //   dispatch(loadUser())
+  // }, [])
+
+  useEffect(() => {
+    dispatch(fetchItems(sortBy, gender))
+  }, [sortBy])
+
   return (
     <>
       <Header color={'white'} />
       <main className="main">
-        <section className="hero">
+        <section className={`hero ${gender}`}>
           <div className="container hero__container">
             <h1 className="visually-hidden">Denim - best shop!</h1>
             <div className="banner-slider">
@@ -19,8 +33,6 @@ function Home() {
                     <p className="hero__descr">
                       All Sale Items are Final Sale / Free Shipping on All Orders
                     </p>
-                    {/* <img src="img/girl.png" className="hero__image" alt="Girl" aria-hidden="true" /> */}
-                    {/* <img src={'https://images.unsplash.com/photo-1620634824236-1a70da91a3b4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80'} className="hero__image" alt="Girl" aria-hidden="true" /> */}
                   </div>
                 </div>
                 <div className="swiper-slide">

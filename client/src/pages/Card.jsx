@@ -1,29 +1,52 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import { addCartItem } from '../redux/actions/cart'
+
 import { fetchItem, removeCurrentProduct } from '../redux/actions/products'
 
 function Card() {
   const params = useParams()
   const dispatch = useDispatch()
   const { product, isLoaded } = useSelector(({ currentProduct }) => currentProduct)
-  const [currentProduct, setCurrentProduct] = useState({})
+  const user = useSelector(({ auth }) => auth.user)
+  const [currentSize, setCurrentSize] = useState(null)
+  const [chooseAlert, setChooseAlert] = useState(false)
 
   useEffect(() => {
-    if (isLoaded) {
-      setCurrentProduct(...product)
-    }
-  }, [isLoaded])
-
-  useEffect(() => {
-    dispatch(fetchItem(params.id))
+    dispatch(fetchItem(params.id, currentSize))
 
     return () => {
       dispatch(removeCurrentProduct())
     }
   }, [params.id])
+
+  const addToCart = () => {
+    if (user !== null) {
+      if (currentSize !== null) {
+        dispatch(addCartItem(user.id, product._id, currentSize))
+      } else {
+        setChooseAlert(!chooseAlert)
+      }
+    } else {
+      // localStorage.setItem('cartItems', JSON.stringify(products))
+    }
+  }
+
+  const onSizeSelect = (size) => {
+    setCurrentSize(size)
+    if (chooseAlert) setChooseAlert(false)
+  }
+
+  const setActiveSize = (size) => {
+    if (size === currentSize) {
+      return 'size-select__btn--active'
+    } else {
+      return ''
+    }
+  }
 
   return (
     <div className="site-container">
@@ -60,215 +83,72 @@ function Card() {
                   <div className="container container-narrow">
                     <div className="card-top__left">
                       <div className="card-slider">
-                        {/* <div className="card-slider__thumbs">
-                          <div className="card-slider__thumb">
-                            <img src={currentProduct.imageUrl} alt="" />
-                          </div>
-                          <div className="card-slider__thumb">
-                            <img src="img/card-main.jpg" alt="" />
-                          </div>
-                          <div className="card-slider__thumb">
-                            <img src="https://via.placeholder.com/70x90" alt="" />
-                          </div>
-                          <div className="card-slider__thumb">
-                            <img src="https://via.placeholder.com/70x90" alt="" />
-                          </div>
-                          <div className="card-slider__thumb">
-                            <img src="img/card-main.jpg" alt="" />
-                          </div>
-                          <div className="card-slider__thumb">
-                            <img src="https://via.placeholder.com/70x90" alt="" />
-                          </div>
-                          <div className="card-slider__thumb">
-                            <img src="img/card-main.jpg" alt="" />
-                          </div>
-                        </div> */}
                         <div className="card-slider__main">
-                          <img src={currentProduct.imageUrl} alt="" />
+                          <img src={product.imageUrl} alt="" />
                         </div>
                       </div>
                     </div>
                     <div className="card-top__right">
                       <div className="card-info">
                         <span className="card-info__prop product-prop best">Best Seller</span>
-                        <h3 className="card-info__title">{currentProduct.name}</h3>
-                        <div className="card-info__rate">
-                          <img src="img/stars.png" alt="Rating 4 of 5" />
-                          <span>2 reviews</span>
-                        </div>
+                        <h3 className="card-info__title">{product.name}</h3>
+                        <Link
+                          to={`/brands/${product.brand && product.brand.trim()}`}
+                          className="card-info__brand main-link">
+                          {product.brand}
+                        </Link>
                         <div className="card-info__price info-price">
-                          <div className="info-price__current">{currentProduct.price}</div>
-                          <div className="info-price__old">{currentProduct.oldPrice}</div>
+                          <div className="info-price__current">{product.price}₽</div>
+                          {product.oldPrice && (
+                            <div className="info-price__old">{product.oldPrice}₽</div>
+                          )}
                         </div>
-                        <p className="card-info__descr">{currentProduct.descr}</p>
+                        <p className="card-info__descr">{product.descr}</p>
                         <div className="card-info__select card-info__first-select color-select">
                           <p className="color-select__selected ">
-                            color:<span>green</span>
+                            Цвет: <span>{product.color ? product.color : 'Не указан'}</span>
                           </p>
-                          <ul className="color-select__list">
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="red"
-                                style={{ backgroundColor: 'red' }}
-                                aria-label="Choice red color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="orange"
-                                style={{ backgroundColor: 'orange' }}
-                                aria-label="Choice orange color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset color-select__btn--active"
-                                data-color="green"
-                                style={{ backgroundColor: 'green' }}
-                                aria-label="Choice green color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="white"
-                                style={{ backgroundColor: 'white' }}
-                                aria-label="Choice white color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="black"
-                                style={{ backgroundColor: 'black' }}
-                                aria-label="Choice black color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="brown"
-                                style={{ backgroundColor: 'brown' }}
-                                aria-label="Choice brown color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="purple"
-                                style={{ backgroundColor: 'purple' }}
-                                aria-label="Choice purple color"></button>
-                            </li>
-                            <li className="color-select__item">
-                              <button
-                                className="color-select__btn btn-reset"
-                                data-color="grey"
-                                style={{ backgroundColor: 'grey' }}
-                                aria-label="Choice grey color"></button>
-                            </li>
-                          </ul>
                         </div>
                         <div className="card-info__select size-select card-info__second-select">
                           <p className="size-select__selected ">
-                            size:<span>select a size</span>
+                            размер:<span>{currentSize ? currentSize : 'выберите размер'}</span>
                           </p>
                           <ul className="size-select__list">
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 23 size">
-                                23
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 24 size">
-                                24
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 25 size">
-                                25
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 26 size">
-                                26
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 27 size">
-                                27
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 28 size">
-                                28
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 29 size">
-                                29
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 30 size">
-                                30
-                              </button>
-                            </li>
-                            <li className="size-select__item">
-                              <button
-                                className="size-select__btn btn-reset"
-                                aria-label="Choice 31 size">
-                                31
-                              </button>
-                            </li>
+                            {product.sizes &&
+                              product.sizes.map((size, index) => (
+                                <li className="size-select__item" key={index}>
+                                  <button
+                                    className={`size-select__btn btn-reset ${setActiveSize(size)}`}
+                                    aria-label="Choice 23 size"
+                                    onClick={() => onSizeSelect(size)}>
+                                    {size}
+                                  </button>
+                                </li>
+                              ))}
                           </ul>
-                          <button className="btn-reset size-select__clear">
-                            <svg>{/* <use xlink:href="img/sprite.svg#close"></use> */}</svg>
-                            Clear
-                          </button>
                         </div>
-                        <div className="card-info__stepper stepper">
-                          <button
-                            className="btn-reset stepper__btn stepper__btn--minus"
-                            aria-label="minus"
-                            disabled>
-                            <svg>{/* <use xlink:href="img/sprite.svg#minus"></use> */}</svg>
-                          </button>
-                          <input type="text" className="stepper__input" value="1" maxLength="5" />
-                          <button
-                            className="btn-reset stepper__btn stepper__btn--plus"
-                            aria-label="minus">
-                            <svg>{/* <use xlink:href="img/sprite.svg#plus"></use> */}</svg>
-                          </button>
-                        </div>
-                        <button className="btn-reset card-info__btn card-info__btn--tocart">
-                          Add to cart
+                        {chooseAlert && (
+                          <div className="choose-alert">
+                            Пожалуйста, выберите имеющийся в наличии размер
+                          </div>
+                        )}
+                        <button
+                          className="btn-reset card-info__btn card-info__btn--tocart"
+                          onClick={addToCart}>
+                          Добавить в корзину
                         </button>
                         <button className="btn-reset card-info__btn card-info__btn--towishlist">
-                          Add to Wishlist
+                          Добавить в желаемое
                         </button>
                         <div className="card-info__bottom card-bottom">
                           <div className="card-bottom__item">
                             <span>Sku:</span>FW511
                           </div>
                           <div className="card-bottom__item">
-                            <span>Category:</span>
-                            <a href="#">Trousers</a>,<a href="#">Life style</a>
-                          </div>
-                          <div className="card-bottom__item">
-                            <span>Tags:</span>
-                            <a href="#">Designer</a>,<a href="#">Women</a>
+                            <span>Категория:</span>
+                            <Link to={`/category/${product.type}`} className="main-link">
+                              {product.type}
+                            </Link>
                           </div>
                         </div>
                         <div className="card-bottom__social">

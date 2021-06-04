@@ -3,6 +3,10 @@ import React, { useState } from 'react'
 function SortDropdown({ items, onSelectItem, activeSortType }) {
   const [visiblePopup, setVisiblePopup] = useState(false)
 
+  const handleSortType = (item) => {
+    onSelectItem(item.type)
+  }
+
   return (
     <div className="custom-select">
       <div className="custom-select__top" onClick={() => setVisiblePopup(!visiblePopup)}>
@@ -16,7 +20,7 @@ function SortDropdown({ items, onSelectItem, activeSortType }) {
                 <li
                   className={`custom-select__item ${item.type === activeSortType ? 'active' : ''}`}
                   key={index}
-                  onClick={() => onSelectItem(item)}>
+                  onClick={() => handleSortType(item)}>
                   {item.name}
                 </li>
               ))}

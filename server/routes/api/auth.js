@@ -17,6 +17,7 @@ const router = Router();
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log(req);
 
   // Simple validation
   if (!email || !password) {
@@ -34,13 +35,17 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: 3600 });
     if (!token) throw Error('Couldnt sign the token');
 
+    console.log(user);
+
     res.status(200).json({
       token,
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+        cartItems: user.cartItems,
+        history: user.history,
+      },
     });
   } catch (e) {
     res.status(400).json({ msg: e.message });
@@ -74,14 +79,14 @@ router.post('/register', async (req, res) => {
     const newUser = new User({
       name,
       email,
-      password: hash
+      password: hash,
     });
 
     const savedUser = await newUser.save();
     if (!savedUser) throw Error('Something went wrong saving the user');
 
     const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
-      expiresIn: 3600
+      expiresIn: 3600,
     });
 
     res.status(200).json({
@@ -89,8 +94,8 @@ router.post('/register', async (req, res) => {
       user: {
         id: savedUser.id,
         name: savedUser.name,
-        email: savedUser.email
-      }
+        email: savedUser.email,
+      },
     });
   } catch (e) {
     res.status(400).json({ error: e.message });

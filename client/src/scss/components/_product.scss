@@ -13,6 +13,15 @@
       object-fit: cover;
       transition: transform 0.3s;
     }
+
+    &--order {
+      img {
+        max-height: 260px;
+        width: 100%;
+        height: 100%;
+        object-position: top;
+      }
+    }
   }
 
   &__sale {
@@ -26,6 +35,13 @@
     text-transform: uppercase;
     padding: 4px 10px;
     z-index: 20;
+  }
+
+  &__size {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-top: 10px;
   }
 
   &__prop {

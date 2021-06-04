@@ -39,11 +39,11 @@
   }
 }
 
-.search-form {
+.search {
   &__btn {
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    // width: 16px;
+    // height: 16px;
     transition: opacity 0.3s;
     svg {
       fill: $white;

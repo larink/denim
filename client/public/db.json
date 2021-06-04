@@ -10,7 +10,8 @@
       "oldPrice": 2690,
       "price": 1425,
       "gender": "male",
-      "brand": "RoxyFoxy"
+      "brand": "RoxyFoxy",
+      "sizes": [46,58,50,52]
     },
     {
       "_id": "609956207242791194f5f113",
@@ -135,8 +136,5 @@
       "price": 200,
       "gender": "male"
     }
-  ],
-  "users": [
-
   ]
 }

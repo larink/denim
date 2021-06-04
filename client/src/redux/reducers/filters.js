@@ -1,10 +1,14 @@
-import { SET_SORT_BY } from '../constants'
+import { SET_GENDER_STATE, SET_SORT_BY } from '../constants'
 
 const initialState = {
-  sortBy: { type: 'popular', order: 'desc' },
+  sortBy: 'rating',
 }
 
-const filters = (state = initialState, action) => {
+const appState = {
+  gender: 'women',
+}
+
+export const filters = (state = initialState, action) => {
   switch (action.type) {
     case SET_SORT_BY:
       return {
@@ -16,4 +20,14 @@ const filters = (state = initialState, action) => {
   }
 }
 
-export default filters
+export const app = (state = appState, action) => {
+  switch (action.type) {
+    case SET_GENDER_STATE:
+      return {
+        ...state,
+        gender: action.payload,
+      }
+    default:
+      return state
+  }
+}

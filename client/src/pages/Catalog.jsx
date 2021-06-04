@@ -1,25 +1,45 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchItems } from '../redux/actions/products'
+import { fetchItems, getCategories } from '../redux/actions/products'
 import Product from '../components/Product'
 import SortDropdown from '../components/SortDropdown'
-import { setSortBy } from '../redux/actions/filters'
+import { setGenderState, setSortBy } from '../redux/actions/filters'
+import Filters from '../components/Filters'
+import { useHistory, useLocation, useParams } from 'react-router-dom'
+import Pagination from '../components/Pagination'
 
 const sortItems = [
-  { name: 'Популярности', type: 'popular', order: 'desc' },
-  { name: 'Цене', type: 'price', order: 'asc' },
+  { name: 'Популярности', type: 'rating' },
+  { name: 'Цене по возростанию', type: 'price' },
+  { name: 'Цене по убыванию', type: '-price' },
 ]
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
 
 function Catalog() {
   const dispatch = useDispatch()
   const products = useSelector(({ products }) => products.items)
   const sortBy = useSelector(({ filters }) => filters.sortBy)
+  const gender = useSelector(({ app }) => app.gender)
+
+  const query = useQuery()
+  const history = useHistory()
+  const page = query.get('page') || 1
+  const searchQuery = query.get('searchQuery')
 
   useEffect(() => {
-    dispatch(fetchItems(sortBy))
-  }, [sortBy])
+    let gender = history.location.pathname.split('/')[1]
+    dispatch(setGenderState(gender))
+    dispatch(fetchItems(sortBy, gender, page))
+  }, [sortBy, page])
+
+  useEffect(() => {
+    dispatch(getCategories())
+  }, [])
 
   const onSelectItem = (item) => {
     dispatch(setSortBy(item))
@@ -115,215 +135,7 @@ function Catalog() {
           </div>
           <div className="catalog-content">
             <div className="container container-narrow">
-              <div className="catalog-filters">
-                <button className="hide-filters btn-reset">Hide filters</button>
-                <div className="catalog-filter catalog-filter--open">
-                  <div className="catalog-filter__top">
-                    <div className="catalog-filter__caption">
-                      <h3 className="catalog-filter__title">Categories</h3>
-                      <span className="catalog-filter__quantity quantity">1</span>
-                    </div>
-                    <span className="catalog-filter__toggle"></span>
-                  </div>
-                  <div className="catalog-filter__bottom ">
-                    <ul className="catalog-filter__items">
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">All categories</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Accessories</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Dresses</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text"> Coats</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Clothes</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">T-Shirt</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Summer</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Shirts</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text"> Jacket</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Short</span>
-                        </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="catalog-filter">
-                  <div className="catalog-filter__top">
-                    <div className="catalog-filter__caption">
-                      <h3 className="catalog-filter__title">Color</h3>
-                      <span className="catalog-filter__quantity quantity">3</span>
-                    </div>
-                    <span className="catalog-filter__toggle"></span>
-                  </div>
-                  <div className="catalog-filter__bottom">
-                    <ul className="catalog-filter__items">
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">All categories</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Accessories</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Dresses</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text"> Coats</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Clothes</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">T-Shirt</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Summer</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Shirts</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text"> Jacket</span>
-                        </label>
-                      </li>
-                      <li className="catalog-filter__item">
-                        <label className="custom-checkbox">
-                          <input
-                            type="checkbox"
-                            className="custom-checkbox__input visually-hidden"
-                          />
-                          <span className="custom-checkbox__text">Short</span>
-                        </label>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+              <Filters sortBy={sortBy} gender={gender} page={page} />
               <div className="catalog-grid">
                 <div className="catalog-grid__props catalog-props">
                   <div className="catalog-props__top">
@@ -366,39 +178,23 @@ function Catalog() {
                     <SortDropdown
                       items={sortItems}
                       onSelectItem={onSelectItem}
-                      activeSortType={sortBy.type}
+                      activeSortType={sortBy}
                     />
                   </div>
                   <div className="catalog-props__choice catalog-choice">
                     <button className="btn-reset catalog-choice__clear">Clear all</button>
                   </div>
-                  <ul className="catalog-grid__content" data-grid-columns="4">
-                    {products &&
-                      products.map((product) => <Product key={product._id} {...product} />)}
-                  </ul>
-                  <ul className="pagination">
-                    <li className="pagination__item">
-                      <a href="#" className="pagination__link pagination__link--current">
-                        1
-                      </a>
-                    </li>
-                    <li className="pagination__item">
-                      <a href="#" className="pagination__link">
-                        2
-                      </a>
-                    </li>
-                    <li className="pagination__item">
-                      <a href="#" className="pagination__link">
-                        3
-                      </a>
-                    </li>
-                    <li className="pagination__item">
-                      <a href="#" className="pagination__link">
-                        Next
-                        <svg>{/* <use xlink:href="img/sprite.svg#angle-right"></use> */}</svg>
-                      </a>
-                    </li>
-                  </ul>
+                  {products.length !== 0 ? (
+                    <>
+                      <ul className="catalog-grid__content" data-grid-columns="4">
+                        {products &&
+                          products.map((product) => <Product key={product._id} {...product} />)}
+                      </ul>
+                      <Pagination page={page} />
+                    </>
+                  ) : (
+                    <p className="catalog-grid__no-items">В данной категории нету товара</p>
+                  )}
                 </div>
               </div>
             </div>

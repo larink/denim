@@ -11,7 +11,6 @@
 }
 
 .card-top {
-
   .container {
     display: flex;
 
@@ -32,7 +31,6 @@
     padding-top: 52px;
     padding-left: 10.5%;
     width: calc(100% - 57.5%);
-
 
     @include lg {
       padding-left: 5%;
@@ -58,6 +56,11 @@
     margin-bottom: 15px;
   }
 
+  &__brand {
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+
   &__rate {
     color: var(--color-gray);
     font-size: 13px;
@@ -76,7 +79,7 @@
     color: var(--color-tundora);
     font-size: 13px;
     line-height: 20px;
-    margin-bottom: 55px;
+    margin-bottom: 20px;
   }
 
   &__first-select {
@@ -84,7 +87,7 @@
   }
 
   &__second-select {
-    margin-bottom: 82px;
+    margin-bottom: 20px;
   }
 
   &__stepper {
@@ -101,11 +104,11 @@
     font-weight: 700;
     text-transform: uppercase;
     background-color: var(--color-dark);
-    transition: color .3s, background-color .3s;
+    transition: color 0.3s, background-color 0.3s;
 
     &:hover {
       color: var(--color-dark);
-      transition: color .3s, background-color .3s;
+      transition: color 0.3s, background-color 0.3s;
       background-color: #f2f2f2;
     }
 
@@ -115,7 +118,7 @@
 
       &:hover {
         color: var(--color-white);
-        transition: color .3s, background-color .3s;
+        transition: color 0.3s, background-color 0.3s;
         background-color: var(--color-dark);
       }
     }
@@ -138,7 +141,6 @@
     text-decoration: line-through;
     margin-top: 10px;
   }
-
 }
 
 .color-select {
@@ -149,7 +151,6 @@
     font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
-    margin-bottom: 15px;
 
     span {
       color: var(--color-dark);
@@ -186,19 +187,19 @@
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      transition: border .3s;
+      transition: border 0.3s;
     }
 
     &:hover {
       &::before {
-        transition: border .3s;
+        transition: border 0.3s;
         border: 1px solid var(--color-dark);
       }
     }
 
     &--active {
       &::before {
-        transition: border .3s;
+        transition: border 0.3s;
         border: 1px solid var(--color-dark);
       }
     }
@@ -263,7 +264,7 @@
     height: 32px;
     position: relative;
     color: var(--color-gray);
-    transition: color .3s;
+    transition: color 0.3s;
     font-size: 13px;
 
     &::before {
@@ -274,12 +275,12 @@
       position: absolute;
       left: 0;
       top: 0;
-      transition: border .3s;
+      transition: border 0.3s;
     }
 
     &:hover {
       &::before {
-        transition: border .3s;
+        transition: border 0.3s;
         border: 1px solid var(--color-dark);
       }
 
@@ -288,7 +289,7 @@
 
     &--active {
       &::before {
-        transition: border .3s;
+        transition: border 0.3s;
         border: 1px solid var(--color-dark);
       }
 
@@ -314,11 +315,11 @@
       width: 12px;
       height: 12px;
       fill: var(--color-gray);
-      transition: fill .3s;
+      transition: fill 0.3s;
 
       &:hover {
         fill: var(--color-dark);
-        transition: fill .3s;
+        transition: fill 0.3s;
       }
     }
 
@@ -343,21 +344,31 @@
 .card-bottom {
   margin-top: 50px;
   display: flex;
-  justify-content: space-between;
+  // justify-content: space-between;
   flex-wrap: wrap;
   font-weight: 700;
   font-size: 10px;
   color: var(--color-tundora);
   text-transform: uppercase;
 
+  a {
+    font-weight: 700;
+    font-size: 10px;
+    color: var(--color-tundora);
+    text-transform: uppercase;
+  }
+
   span {
     color: var(--color-gray);
-
   }
 
   &__item {
     @include md {
       margin-bottom: 5px;
+    }
+
+    &:not(:last-child) {
+      margin-right: 25px;
     }
   }
 
@@ -463,7 +474,6 @@
     &--active {
       display: block;
     }
-
   }
 
   @include xs {
@@ -493,7 +503,6 @@
   bottom: 0;
   text-align: left;
 
-
   .swiper-pagination-bullet {
     margin: 0 8px !important;
     width: 6px;
@@ -520,4 +529,10 @@
       background-color: var(--color-gray);
     }
   }
+}
+
+.choose-alert {
+  padding: 15px 10px;
+  background-color: rgba(red, 0.2);
+  margin-bottom: 20px;
 }

@@ -1,7 +1,17 @@
-import { CURRENT_PRODUCT, REMOVE_CURRENT_PRODUCT, SET_ITEMS, SET_LOADED } from '../constants'
+import {
+  CURRENT_PRODUCT,
+  REMOVE_CURRENT_PRODUCT,
+  SET_CATEGORIES,
+  SET_ITEMS,
+  SET_LOADED,
+  SET_SEARCHED_ITEMS,
+} from '../constants'
 
 const initialState = {
   items: [],
+  currentPage: 1,
+  totalPages: 1,
+  categories: [],
 }
 
 export const productsReducer = (state = initialState, action) => {
@@ -9,8 +19,22 @@ export const productsReducer = (state = initialState, action) => {
     case SET_ITEMS:
       return {
         ...state,
+        items: action.payload.items,
+        currentPage: action.payload.currentPage,
+        totalPages: action.payload.totalPages,
+      }
+    case SET_SEARCHED_ITEMS: {
+      return {
+        ...state,
         items: action.payload,
       }
+    }
+    case SET_CATEGORIES: {
+      return {
+        ...state,
+        categories: action.payload,
+      }
+    }
     default:
       return state
   }

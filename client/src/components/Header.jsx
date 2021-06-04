@@ -1,8 +1,28 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
+import { useSelector } from 'react-redux'
+import Search from './Search'
 
 function Header({ color }) {
+  const auth = useSelector(({ auth }) => auth)
+  const gender = useSelector(({ app }) => app.gender)
+  const { user, isAuthenticated } = auth
+
+  const getNumberOfItems = () => {
+    if (isAuthenticated) {
+      if (user !== null) {
+        if (user.cartItems) {
+          return user.cartItems.length
+        } else {
+          return 0
+        }
+      }
+    } else {
+      return 0
+    }
+  }
+
   return (
     <header className={`header ${color}`}>
       <div className="container header__container">
@@ -15,34 +35,8 @@ function Header({ color }) {
         </Link>
         <ul className="shop-nav header__shop-nav">
           <li className="shop-nav__item">
-            <form action="" className="shop-nav__search-form search-form">
-              <button className="search-form__btn btn-reset" aria-label="Find">
-                <svg
-                  version="1.1"
-                  id="Capa_1"
-                  // xmlns="http://www.w3.org/2000/svg"
-                  // xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  viewBox="0 0 512.005 512.005"
-                  // style="enable-background:new 0 0 512.005 512.005;"
-                  // xml:space="preserve"
-                >
-                  <g>
-                    <path
-                      d="M505.749,475.587l-145.6-145.6c28.203-34.837,45.184-79.104,45.184-127.317c0-111.744-90.923-202.667-202.667-202.667
-			S0,90.925,0,202.669s90.923,202.667,202.667,202.667c48.213,0,92.48-16.981,127.317-45.184l145.6,145.6
-			c4.16,4.16,9.621,6.251,15.083,6.251s10.923-2.091,15.083-6.251C514.091,497.411,514.091,483.928,505.749,475.587z
-			 M202.667,362.669c-88.235,0-160-71.765-160-160s71.765-160,160-160s160,71.765,160,160S290.901,362.669,202.667,362.669z"
-                    />
-                  </g>
-                </svg>
-              </button>
-            </form>
-          </li>
-          <li className="shop-nav__item">
             <Link
-              to="/registration"
+              to={`/${auth.isAuthenticated ? 'profile' : 'logon'}`}
               className="shop-nav__link shop-nav__link--user"
               aria-label="Go to profile">
               <svg
@@ -68,7 +62,7 @@ function Header({ color }) {
             </Link>
           </li>
           <li className="shop-nav__item">
-            <a href="#" className="shop-nav__link cart" aria-label="Go to cart">
+            <Link to="/cart" className="shop-nav__link cart" aria-label="Go to cart">
               <span className="cart__icon">
                 <svg
                   version="1.1"
@@ -92,8 +86,20 @@ function Header({ color }) {
                   />
                 </svg>
               </span>
-              <span className="cart__quantity quantity">3</span>
-            </a>
+              <span className="cart__quantity quantity">{getNumberOfItems()}</span>
+            </Link>
+          </li>
+        </ul>
+      </div>
+      <div className="container">
+        <ul className="nav__list nav__list--flex">
+          <li className="nav__item">
+            <Link to={`/${gender}`} className="main-link nav__link">
+              Одежда
+            </Link>
+          </li>
+          <li className="shop-nav__item">
+            <Search />
           </li>
         </ul>
       </div>

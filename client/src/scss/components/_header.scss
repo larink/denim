@@ -19,9 +19,17 @@
         fill: $black;
       }
     }
-    .search-form__btn {
+    .search__btn {
       svg {
         fill: $black;
+      }
+
+      input {
+        border-color: $black;
+
+        &::placeholder {
+          color: $black;
+        }
       }
     }
   }
@@ -47,7 +55,7 @@
   }
 
   &__shop-nav {
-    margin-left: 250px;
+    // margin-left: 250px;
 
     @include md {
       margin-left: 0;
@@ -57,7 +65,7 @@
 
 .logo {
   display: inline-block;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 30px;
 
   // width: 200px;
