@@ -15,6 +15,11 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    default: 'customer',
+    enum: ['customer', 'admin', 'employer'],
+  },
   cartItems: {
     type: Array,
     default: [],

@@ -59,6 +59,13 @@ function Profile({ page }) {
           <Logout />
         </div>
       </div>
+      {user !== null && user.role === 'admin' ? (
+        <Link to={`/admin`} className="profile-menu__link">
+          Админ-панель
+        </Link>
+      ) : (
+        ''
+      )}
       <Switch>
         <Route path={`${path}/:id`}>
           <Page />

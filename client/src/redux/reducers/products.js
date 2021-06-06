@@ -2,9 +2,11 @@ import {
   CURRENT_PRODUCT,
   REMOVE_CURRENT_PRODUCT,
   SET_CATEGORIES,
+  SET_CATEGORY,
   SET_ITEMS,
   SET_LOADED,
   SET_SEARCHED_ITEMS,
+  REMOVE_CATEGORY,
 } from '../constants'
 
 const initialState = {
@@ -40,14 +42,21 @@ export const productsReducer = (state = initialState, action) => {
   }
 }
 
-export const productReducer = (state = { product: {}, isLoaded: false }, action) => {
+export const productReducer = (state = { product: {}, isLoaded: false, category: {} }, action) => {
   switch (action.type) {
     case CURRENT_PRODUCT:
       return { ...state, product: action.payload, isLoaded: true }
+    case SET_CATEGORY:
+      return {
+        ...state,
+        category: action.payload,
+      }
     case SET_LOADED:
       return { ...state, ...action.payload }
     case REMOVE_CURRENT_PRODUCT:
       return { ...state, product: {}, isLoaded: false }
+    case REMOVE_CATEGORY:
+      return { ...state, category: {} }
     default:
       return state
   }

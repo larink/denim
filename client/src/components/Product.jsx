@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Product({ imageUrl, name, descr, _id, type, price, oldPrice, size, order }) {
+function Product({ imageUrl, name, descr, _id, type, price, oldPrice, size, order, gender }) {
   return (
     <li className="products-grid__item">
       <article className="product">

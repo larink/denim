@@ -3,7 +3,7 @@ import config from '../config';
 
 const { JWT_SECRET } = config;
 
-export default (req, res, next) => {
+export const auth = (req, res, next) => {
   const token = req.header('x-auth-token');
 
   // Check for token
@@ -19,4 +19,15 @@ export default (req, res, next) => {
   } catch (e) {
     res.status(400).json({ msg: 'Token is not valid' });
   }
+};
+
+export const authRole = (role) => {
+  return (req, res, next) => {
+    if (req.user.role !== role) {
+      res.status(401);
+      return res.send('Нету доступа');
+    }
+
+    next();
+  };
 };

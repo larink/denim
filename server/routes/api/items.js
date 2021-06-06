@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import auth from '../../middleware/auth';
+import { auth } from '../../middleware/auth';
 // Item Model
 import Item from '../../models/Item';
 import Category from '../../models/Category';
@@ -44,6 +44,14 @@ router.get('/:gender', async (req, res) => {
     filter = {
       gender: gender,
       category: req.query.category,
+      price: { $gte: minPrice, $lte: maxPrice },
+    };
+  }
+
+  if (req.query.brand) {
+    filter = {
+      gender: gender,
+      brand: req.query.brand,
       price: { $gte: minPrice, $lte: maxPrice },
     };
   }
@@ -133,6 +141,8 @@ router.get('/search', async (req, res) => {
  */
 
 router.get('/product/:id', async (req, res) => {
+  console.log(req.params);
+
   try {
     const items = await Item.findById(req.params.id);
     if (!items) throw Error('No items');
@@ -164,6 +174,7 @@ router.post('/', async (req, res) => {
     brand: req.body.brand,
     sizes: req.body.sizes,
     category: req.body.category,
+    color: req.body.color,
     countInStock: req.body.countInStock,
     rating: req.body.rating,
     numReviews: req.body.numReviews,

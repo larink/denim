@@ -1,27 +1,43 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
+import Breadcrumbs from '../components/Breadcrumbs'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { addCartItem } from '../redux/actions/cart'
 
-import { fetchItem, removeCurrentProduct } from '../redux/actions/products'
+import {
+  fetchItem,
+  getCategory,
+  removeCategory,
+  removeCurrentProduct,
+} from '../redux/actions/products'
 
 function Card() {
   const params = useParams()
   const dispatch = useDispatch()
-  const { product, isLoaded } = useSelector(({ currentProduct }) => currentProduct)
+  const { product, isLoaded, category } = useSelector(({ currentProduct }) => currentProduct)
+  const gender = useSelector(({ app }) => app.gender)
   const user = useSelector(({ auth }) => auth.user)
   const [currentSize, setCurrentSize] = useState(null)
   const [chooseAlert, setChooseAlert] = useState(false)
 
   useEffect(() => {
     dispatch(fetchItem(params.id, currentSize))
-
+    if (isLoaded) dispatch(getCategory(product.category))
     return () => {
       dispatch(removeCurrentProduct())
+      dispatch(removeCategory())
     }
   }, [params.id])
+
+  useEffect(() => {
+    if (isLoaded) dispatch(getCategory(product.category))
+
+    return () => {
+      dispatch(removeCategory())
+    }
+  }, [isLoaded])
 
   const addToCart = () => {
     if (user !== null) {
@@ -57,26 +73,7 @@ function Card() {
         ) : (
           <section className="card">
             <h2 className="visually-hidden">Product card</h2>
-            <div className="breadcrumbs">
-              <div className="container container-narrow">
-                <ul className="breadcrumbs__list">
-                  <li className="breadcrumbs__item">
-                    <a href="#" className="breadcrumbs__link">
-                      Home
-                    </a>
-                  </li>
-                  <li className="breadcrumbs__item">
-                    <a href="#" className="breadcrumbs__link">
-                      Shop
-                    </a>
-                  </li>
-                  <li className="breadcrumbs__item">
-                    <a className="breadcrumbs__link breadcrumbs__link--current">New Arrivals</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
+            <Breadcrumbs category={category} />
             <div className="card-content">
               <div className="card-content__top">
                 <div className="card-top">

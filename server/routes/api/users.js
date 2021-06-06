@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import auth from '../../middleware/auth';
+import { auth, authRole } from '../../middleware/auth';
 import Payment from '../../models/Payment';
 // User Model
 import User from '../../models/User';
@@ -172,6 +172,10 @@ router.get('/orders', async (req, res) => {
   } catch (e) {
     res.status(400).json({ msg: e.msg });
   }
+});
+
+router.get('/admin', auth, authRole('admin'), async (req, res) => {
+  console.log(req.user);
 });
 
 export default router;

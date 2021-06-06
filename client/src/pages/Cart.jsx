@@ -33,7 +33,7 @@ function Cart() {
         // setShowTotal(true)
       }
     }
-  }, [user && user.cartItems, user.cartItems])
+  }, [user && user.cartItems])
 
   const calculateTotal = () => {
     let total = 0

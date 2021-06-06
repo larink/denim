@@ -6,18 +6,21 @@ import {
   SET_ITEMS,
   SET_LOADED,
   SET_SEARCHED_ITEMS,
+  SET_CATEGORY,
+  REMOVE_CATEGORY,
 } from '../constants'
 
 export const fetchItems =
-  (sortBy, gender, page, categoryId, minPrice, maxPrice) => async (dispatch) => {
+  (sortBy, gender, page, categoryId, minPrice, maxPrice, brand) => async (dispatch) => {
     let category = categoryId ? `&category=${categoryId}` : ''
+    let brandQuery = brand ? `&brand=${brand}` : ''
 
     await axios
       // .get(`http://localhost:3001/products?_sort=${sortBy.type}&_order=${sortBy.order}`)
       .get(
         `http://localhost:5000/api/items/${gender}?page=${page}${category}&sort=${sortBy}&price=${
           minPrice || 0
-        }<${maxPrice || 99999}`,
+        }<${maxPrice || 99999}${brandQuery}`,
       )
       .then(({ data }) => {
         dispatch(setItems(data))
@@ -46,6 +49,11 @@ export const getCategories = () => (dispatch) => {
     dispatch(setCategories(data))
   })
 }
+export const getCategory = (id) => (dispatch) => {
+  axios.get(`http://localhost:5000/api/categories/${id}`).then(({ data }) => {
+    dispatch(setCategory(data))
+  })
+}
 
 export const fetchItemsBySearch = (searchQuery, gender) => async (dispatch) => {
   await axios
@@ -71,6 +79,9 @@ export const currentProduct = (product) => ({
 export const removeCurrentProduct = () => ({
   type: REMOVE_CURRENT_PRODUCT,
 })
+export const removeCategory = () => ({
+  type: REMOVE_CATEGORY,
+})
 
 export const setLoaded = (payload) => ({
   type: SET_LOADED,
@@ -84,5 +95,10 @@ export const setSerachedItems = (payload) => ({
 
 export const setCategories = (payload) => ({
   type: SET_CATEGORIES,
+  payload,
+})
+
+export const setCategory = (payload) => ({
+  type: SET_CATEGORY,
   payload,
 })

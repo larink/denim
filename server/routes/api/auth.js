@@ -2,7 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import config from '../../config';
 import jwt from 'jsonwebtoken';
-import auth from '../../middleware/auth';
+import { auth } from '../../middleware/auth';
 // User Model
 import User from '../../models/User';
 
@@ -41,6 +41,7 @@ router.post('/login', async (req, res) => {
       token,
       user: {
         id: user._id,
+        role: user.role,
         name: user.name,
         email: user.email,
         cartItems: user.cartItems,
@@ -85,16 +86,19 @@ router.post('/register', async (req, res) => {
     const savedUser = await newUser.save();
     if (!savedUser) throw Error('Something went wrong saving the user');
 
-    const token = jwt.sign({ id: savedUser._id }, JWT_SECRET, {
+    const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET, {
       expiresIn: 3600,
     });
 
     res.status(200).json({
       token,
       user: {
-        id: savedUser.id,
+        id: savedUser._id,
+        role: savedUser.role,
         name: savedUser.name,
         email: savedUser.email,
+        cartItems: savedUser.cartItems,
+        history: savedUser.history,
       },
     });
   } catch (e) {

@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router'
+import Product from '../components/Product'
+import SecondHeader from '../components/SecondHeader'
+import { fetchItems } from '../redux/actions/products'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchItems, getCategories } from '../redux/actions/products'
-import Product from '../components/Product'
 import SortDropdown from '../components/SortDropdown'
 import { setGenderState, setSortBy } from '../redux/actions/filters'
 import Filters from '../components/Filters'
-import { Route, useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import Pagination from '../components/Pagination'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { routes } from '../utils/routesList'
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
 
 const sortItems = [
   { name: 'Популярности', type: 'rating' },
@@ -18,15 +23,13 @@ const sortItems = [
   { name: 'Цене по убыванию', type: '-price' },
 ]
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search)
-}
-
-function Catalog() {
+function CategoryPage() {
+  const { category } = useParams()
   const dispatch = useDispatch()
   const products = useSelector(({ products }) => products.items)
   const sortBy = useSelector(({ filters }) => filters.sortBy)
   const gender = useSelector(({ app }) => app.gender)
+  console.log(category)
 
   const query = useQuery()
   const history = useHistory()
@@ -34,14 +37,8 @@ function Catalog() {
   const searchQuery = query.get('searchQuery')
 
   useEffect(() => {
-    let gender = history.location.pathname.split('/')[1]
-    dispatch(setGenderState(gender))
-    dispatch(fetchItems(sortBy, gender, page))
-  }, [sortBy, page])
-
-  useEffect(() => {
-    dispatch(getCategories())
-  }, [])
+    dispatch(fetchItems(sortBy, gender, page, category, 0, 99999, undefined))
+  }, [sortBy])
 
   const onSelectItem = (item) => {
     dispatch(setSortBy(item))
@@ -53,65 +50,7 @@ function Catalog() {
       <main className="main">
         <div className="hero-catalog">
           <div className="container container-narrow hero-catalog__container">
-            <div className="hero-catalog__slider">
-              <button className="hero-prev-btn btn-reset">
-                <svg>{/* <use xlink:href="img/sprite.svg#prev-arrow"></use> */}</svg>
-              </button>
-              <button className="hero-next-btn btn-reset">
-                <svg>{/* <use xlink:href="img/sprite.svg#next-arrow"></use> */}</svg>
-              </button>
-              <div className="swiper-wrapper">
-                <div className="swiper-slide">
-                  <div className="catalog-slide">
-                    <h2 className="catalog-slide__title">
-                      The best thing about going back to school?
-                    </h2>
-                    <p className="catalog-slide__descr">
-                      This fall denim is king! Denim is officially back in and cool to wear in all
-                      its many forms
-                    </p>
-                    <div className="catalog-slide__btns">
-                      <a href="#" className="catalog-slide__link catalog-slide__link--dark">
-                        Discovery
-                      </a>
-                      <a href="#" className="catalog-slide__link catalog-slide__link--light">
-                        Shop now
-                      </a>
-                    </div>
-                    <img
-                      src="img/girl-banner.png"
-                      alt="girl on banner"
-                      className="catalog-slide__image"
-                    />
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="catalog-slide">
-                    <h2 className="catalog-slide__title">
-                      The best thing about going back to school?
-                    </h2>
-                    <p className="catalog-slide__descr">
-                      This fall denim is king! Denim is officially back in and cool to wear in all
-                      its many forms
-                    </p>
-                    <div className="catalog-slide__btns">
-                      <a href="#" className="catalog-slide__link catalog-slide__link--dark">
-                        Discovery
-                      </a>
-                      <a href="#" className="catalog-slide__link catalog-slide__link--light">
-                        Shop now
-                      </a>
-                    </div>
-                    <img
-                      src="img/girl-banner.png"
-                      alt="girl on banner"
-                      className="catalog-slide__image"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="swiper-pagination hero-pag"></div>
-            </div>
+            <h1></h1>
           </div>
         </div>
         <section className="catalog">
@@ -172,9 +111,7 @@ function Catalog() {
                     <>
                       <ul className="catalog-grid__content" data-grid-columns="4">
                         {products &&
-                          products.map((product) => (
-                            <Product key={product._id} {...product} gender={gender} />
-                          ))}
+                          products.map((product) => <Product key={product._id} {...product} />)}
                       </ul>
                       <Pagination page={page} />
                     </>
@@ -195,4 +132,4 @@ function Catalog() {
   )
 }
 
-export default Catalog
+export default CategoryPage

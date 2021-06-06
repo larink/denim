@@ -7,6 +7,9 @@ function Filters({ sortBy, gender, page }) {
   const categories = useSelector(({ products }) => products.categories)
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(10000)
+  const [visbileCategory, setVisbileCategory] = useState(false)
+  const [visbilePrice, setVisbilePrice] = useState(false)
+  const [visbileColor, setVisbileColor] = useState(false)
 
   const getItemsByCategory = (id) => {
     dispatch(fetchItems(sortBy, gender, page, id))
@@ -27,12 +30,10 @@ function Filters({ sortBy, gender, page }) {
 
   return (
     <div className="catalog-filters">
-      <button className="hide-filters btn-reset">Hide filters</button>
-      <div className="catalog-filter catalog-filter--open">
-        <div className="catalog-filter__top">
+      <div className={`catalog-filter ${visbileCategory ? 'catalog-filter--open' : ''}`}>
+        <div className="catalog-filter__top" onClick={() => setVisbileCategory(!visbileCategory)}>
           <div className="catalog-filter__caption">
             <h3 className="catalog-filter__title">Категории</h3>
-            <span className="catalog-filter__quantity quantity">1</span>
           </div>
           <span className="catalog-filter__toggle"></span>
         </div>
@@ -52,11 +53,10 @@ function Filters({ sortBy, gender, page }) {
           </ul>
         </div>
       </div>
-      <div className="catalog-filter catalog-filter--open">
-        <div className="catalog-filter__top">
+      <div className={`catalog-filter ${visbilePrice ? 'catalog-filter--open' : ''}`}>
+        <div className="catalog-filter__top" onClick={() => setVisbilePrice(!visbilePrice)}>
           <div className="catalog-filter__caption">
             <h3 className="catalog-filter__title">Цена</h3>
-            <span className="catalog-filter__quantity quantity">1</span>
           </div>
           <span className="catalog-filter__toggle"></span>
         </div>
@@ -88,77 +88,15 @@ function Filters({ sortBy, gender, page }) {
           </ul>
         </div>
       </div>
-      <div className="catalog-filter">
-        <div className="catalog-filter__top">
+      <div className={`catalog-filter ${visbileColor ? 'catalog-filter--open' : ''}`}>
+        <div className="catalog-filter__top" onClick={() => setVisbileColor(!visbileColor)}>
           <div className="catalog-filter__caption">
             <h3 className="catalog-filter__title">Color</h3>
-            <span className="catalog-filter__quantity quantity">3</span>
           </div>
           <span className="catalog-filter__toggle"></span>
         </div>
         <div className="catalog-filter__bottom">
-          <ul className="catalog-filter__items">
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">All categories</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">Accessories</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">Dresses</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text"> Coats</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">Clothes</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">T-Shirt</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">Summer</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">Shirts</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text"> Jacket</span>
-              </label>
-            </li>
-            <li className="catalog-filter__item">
-              <label className="custom-checkbox">
-                <input type="checkbox" className="custom-checkbox__input visually-hidden" />
-                <span className="custom-checkbox__text">Short</span>
-              </label>
-            </li>
-          </ul>
+          <ul className="catalog-filter__items"></ul>
         </div>
       </div>
     </div>
