@@ -15,8 +15,6 @@ function Cart() {
   const [ShowTotal, setShowTotal] = useState(false)
   const [ShowSuccess, setShowSuccess] = useState(false)
 
-  console.log(ShowSuccess)
-
   useEffect(() => {
     let cartItems = []
     if (user && user.cartItems) {
@@ -118,7 +116,7 @@ function Cart() {
         ) : isAuthenticated && cartDetail ? (
           <div className="cart-pay">
             <p>
-              Всего {totalQuantity} товара на сумму {Total} ₽
+              Всего {totalQuantity} {totalQuantity === 1 ? 'товар' : 'товара'} на сумму {Total} ₽
             </p>
             <Paypal
               toPay={Total}

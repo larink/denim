@@ -10,6 +10,7 @@ import {
   REGISTER_SUCCESS,
   REMOVE_CART_ITEM,
   SET_CART_ITEM,
+  SET_USER_ADDRESS,
   USER_LOADED,
   USER_LOADING,
 } from '../constants'
@@ -91,6 +92,14 @@ const auth = (state = initialState, action) => {
         user: {
           ...state.user,
           orders: action.payload,
+        },
+      }
+    case SET_USER_ADDRESS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          address: action.payload.address,
         },
       }
     default:

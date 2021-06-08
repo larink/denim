@@ -11,13 +11,6 @@ function Profile({ page }) {
   const history = useHistory()
   let { path, url } = useRouteMatch()
 
-  useEffect(() => {
-    if (user) {
-      console.log(page)
-      // if (page === 'orders') dispatch(getOrders())
-    }
-  }, [history])
-
   return (
     <div className="profile">
       <div className="profile__top profile-top">
@@ -48,6 +41,11 @@ function Profile({ page }) {
             <li className="profile-menu__item">
               <Link to={`${url}/account`} className="profile-menu__link active">
                 Моя учетная запись
+              </Link>
+            </li>
+            <li className="profile-menu__item">
+              <Link to={`${url}/address`} className="profile-menu__link active">
+                Адрес доставки
               </Link>
             </li>
             <li className="profile-menu__item">

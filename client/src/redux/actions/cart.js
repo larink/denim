@@ -8,6 +8,7 @@ import {
   SET_UPDATED,
 } from '../constants'
 import { tokenConfig } from './auth'
+import { returnErrors } from './error'
 
 export const addCartItem = (userId, productId, currentSize) => (dispatch) => {
   dispatch(setUpdated(true))
@@ -68,6 +69,7 @@ export const onSuccessBuy = (data) => (dispatch, getState) => {
   axios
     .post(`http://localhost:5000/api/users/successBuy`, data, tokenConfig(getState))
     .then(({ data }) => dispatch(successBuy(data)))
+    .catch((e) => dispatch(returnErrors(e.msg, e.status)))
 }
 
 const successBuy = (payload) => ({

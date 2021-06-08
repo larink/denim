@@ -37,7 +37,7 @@ function CategoryPage() {
   const searchQuery = query.get('searchQuery')
 
   useEffect(() => {
-    dispatch(fetchItems(sortBy, gender, page, category, 0, 99999, undefined))
+    dispatch(fetchItems(sortBy, gender, page, category, undefined, 0, 99999, undefined))
   }, [sortBy])
 
   const onSelectItem = (item) => {

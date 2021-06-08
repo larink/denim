@@ -10,7 +10,7 @@ html {
 
 body {
   margin: 0;
-  font-family: "Jost", sans-serif;
+  font-family: 'Jost', sans-serif;
   font-weight: 500;
   color: var(--color-dark);
   background-color: var(--color-white);
@@ -75,7 +75,7 @@ ul {
 .container {
   margin: 0 auto;
   padding: 0 40px;
-  
+
   @include xs {
     padding: 0 15px;
   }
@@ -106,6 +106,12 @@ ul {
     color: var(--color-white);
   }
 
+  &--active {
+    &::before {
+      opacity: 1;
+    }
+  }
+
   &:hover {
     &::before {
       opacity: 1;
@@ -131,10 +137,10 @@ ul {
   height: 48px;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
   background-color: var(--color-white);
-  transition: transform .3s;
+  transition: transform 0.3s;
 
   &:hover {
     transform: rotate(360deg);
-    transition: transform .3s;
+    transition: transform 0.3s;
   }
 }

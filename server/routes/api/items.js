@@ -16,9 +16,12 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     const items = await Item.find();
-    // .populate('category');
 
-    res.status(200).json(items);
+    res.status(200).json({
+      items,
+      currentPage: 1,
+      totalPages: 1,
+    });
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
@@ -52,6 +55,13 @@ router.get('/:gender', async (req, res) => {
     filter = {
       gender: gender,
       brand: req.query.brand,
+      price: { $gte: minPrice, $lte: maxPrice },
+    };
+  }
+  if (req.query.size) {
+    filter = {
+      gender: gender,
+      sizes: { $in: [parseInt(req.query.size)] },
       price: { $gte: minPrice, $lte: maxPrice },
     };
   }
@@ -153,6 +163,26 @@ router.get('/product/:id', async (req, res) => {
   }
 });
 
+// router.get('/sizes/:gender', async (req, res) => {
+//   console.log(req.params);
+
+//   try {
+//     const items = await Item.find({ gender: req.params.gender });
+//     if (!items) throw Error('No items');
+//     const arrayOfSizes = items.map((item) => item.sizes);
+//     let sizes = [];
+//     arrayOfSizes.forEach((item) => {
+//       sizes = item;
+//     });
+
+//     console.log(sizes);
+
+//     res.status(200).json(sizes);
+//   } catch (e) {
+//     res.status(400).json({ msg: e.message });
+//   }
+// });
+
 /**
  * @route   POST api/items
  * @desc    Create An Item
@@ -191,7 +221,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:gender/:id', async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send('Неправильная категория');
 
@@ -203,16 +233,12 @@ router.put('/:id', async (req, res) => {
         imageUrl: req.body.imageUrl,
         descr: req.body.descr,
         type: req.body.type,
-        oldPrice: req.body.oldPrice,
         price: req.body.price,
         gender: req.body.gender,
         brand: req.body.brand,
         sizes: req.body.sizes,
         category: req.body.category,
         countInStock: req.body.countInStock,
-        rating: req.body.rating,
-        numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured,
       },
       { new: true }
     );

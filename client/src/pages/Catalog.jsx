@@ -33,14 +33,16 @@ function Catalog() {
   const page = query.get('page') || 1
   const searchQuery = query.get('searchQuery')
 
+  // const queryTest = queryString.stringify({ item: "my-item-data" });
+
   useEffect(() => {
     let gender = history.location.pathname.split('/')[1]
     dispatch(setGenderState(gender))
-    dispatch(fetchItems(sortBy, gender, page))
+    // dispatch(fetchItems(sortBy, gender, page))
   }, [sortBy, page])
 
   useEffect(() => {
-    dispatch(getCategories())
+    dispatch(getCategories(gender))
   }, [])
 
   const onSelectItem = (item) => {

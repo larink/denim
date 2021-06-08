@@ -7,6 +7,7 @@ import {
   LOGOUT_SUCCESS,
   REGISTER_FAIL,
   REGISTER_SUCCESS,
+  SET_USER_ADDRESS,
   USER_LOADED,
   USER_LOADING,
 } from '../constants'
@@ -94,6 +95,14 @@ export const getOrders = (id) => (dispatch, getState) => {
     })
 }
 
+export const setAddress = (id, address) => (dispatch, getState) => {
+  axios
+    .put(`http://localhost:5000/api/users/address/${id}`, address, tokenConfig(getState))
+    .then(({ data }) => {
+      dispatch(setUserAddress(data))
+    })
+}
+
 export const logout = () => {
   return {
     type: LOGOUT_SUCCESS,
@@ -102,6 +111,11 @@ export const logout = () => {
 
 export const getUserOrders = (payload) => ({
   type: GET_USER_ORDERS,
+  payload,
+})
+
+export const setUserAddress = (payload) => ({
+  type: SET_USER_ADDRESS,
   payload,
 })
 

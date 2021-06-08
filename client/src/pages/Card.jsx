@@ -24,7 +24,7 @@ function Card() {
 
   useEffect(() => {
     dispatch(fetchItem(params.id, currentSize))
-    if (isLoaded) dispatch(getCategory(product.category))
+    if (isLoaded) dispatch(getCategory(gender, product.category))
     return () => {
       dispatch(removeCurrentProduct())
       dispatch(removeCategory())
@@ -32,7 +32,7 @@ function Card() {
   }, [params.id])
 
   useEffect(() => {
-    if (isLoaded) dispatch(getCategory(product.category))
+    if (isLoaded) dispatch(getCategory(gender, product.category))
 
     return () => {
       dispatch(removeCategory())
@@ -42,7 +42,7 @@ function Card() {
   const addToCart = () => {
     if (user !== null) {
       if (currentSize !== null) {
-        dispatch(addCartItem(user.id, product._id, currentSize))
+        dispatch(addCartItem(user._id, product._id, currentSize))
       } else {
         setChooseAlert(!chooseAlert)
       }

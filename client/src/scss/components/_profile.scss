@@ -133,3 +133,75 @@
     margin-bottom: 15px;
   }
 }
+
+.profile-address {
+  &__title {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 30px 0 20px 0;
+  }
+
+  &__item {
+    div {
+      &:not(:last-child) {
+        margin-bottom: 7px;
+      }
+    }
+
+    margin-bottom: 20px;
+  }
+
+  .main-link {
+    span {
+      margin-right: 5px;
+    }
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.address-edit {
+  &__title {
+    font-size: 22px;
+    font-weight: 500;
+    margin: 30px 0 20px 0;
+  }
+}
+
+.address-form {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 14px;
+    color: $grey;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+  }
+
+  &__input {
+    margin-top: 10px;
+    padding: 5px;
+  }
+
+  &__btn {
+    background-color: $dark;
+    color: $white;
+    padding: 10px;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: $tundora;
+      transition: all 0.3s;
+    }
+  }
+}

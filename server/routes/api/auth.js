@@ -40,12 +40,13 @@ router.post('/login', async (req, res) => {
     res.status(200).json({
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         role: user.role,
         name: user.name,
         email: user.email,
         cartItems: user.cartItems,
         history: user.history,
+        address: user.address,
       },
     });
   } catch (e) {
@@ -93,7 +94,7 @@ router.post('/register', async (req, res) => {
     res.status(200).json({
       token,
       user: {
-        id: savedUser._id,
+        _id: savedUser._id,
         role: savedUser.role,
         name: savedUser.name,
         email: savedUser.email,

@@ -3,6 +3,7 @@ import { auth, authRole } from '../../middleware/auth';
 import Payment from '../../models/Payment';
 // User Model
 import User from '../../models/User';
+import Item from '../../models/Item';
 
 const router = Router();
 
@@ -113,44 +114,63 @@ router.post('/successBuy', auth, async (req, res) => {
   let history = [];
   let transactionData = {};
 
-  await req.body.cartDetail.forEach((item) => {
-    history.push({
-      dateOfPurchase: Date.now(),
-      imageUrl: item.imageUrl,
-      name: item.name,
-      id: item._id,
-      price: item.price,
-      quantity: item.quantity,
-      size: item.size,
-      paymentId: req.body.paymentData.paymentID,
-    });
-  });
+  let productQuantities = [];
 
-  transactionData.user = {
-    id: req.user.id,
-    name: req.body.user.name,
-    email: req.body.user.email,
-  };
-  transactionData.products = history;
-  transactionData.data = req.body.paymentData;
-
-  await User.findOneAndUpdate(
-    { _id: req.user.id },
-    { $push: { history: history }, $set: { cartItems: [] } },
-    { new: true },
-    (err, user) => {
-      if (err) return res.json({ success: false, err });
-
-      const payment = Payment(transactionData);
-      payment.save();
-
-      res.status(200).json({
-        success: true,
-        cartItems: user.cartItems,
-        cartDetail: [],
+  try {
+    await req.body.cartDetail.forEach((item) => {
+      productQuantities.push({
+        id: item._id,
+        quantity: item.quantity,
       });
-    }
-  );
+
+      history.push({
+        dateOfPurchase: Date.now(),
+        imageUrl: item.imageUrl,
+        name: item.name,
+        id: item._id,
+        price: item.price,
+        quantity: item.quantity,
+        size: item.size,
+        paymentId: req.body.paymentData.paymentID,
+      });
+    });
+
+    console.log(productQuantities);
+    productQuantities.forEach((obj) =>
+      Item.findByIdAndUpdate(obj.id, {
+        $inc: { countInStock: -obj.quantity },
+      })
+    );
+
+    transactionData.user = {
+      id: req.user.id,
+      name: req.body.user.name,
+      email: req.body.user.email,
+      address: req.body.user.address,
+    };
+    transactionData.products = history;
+    transactionData.data = req.body.paymentData;
+
+    await User.findOneAndUpdate(
+      { _id: req.user.id },
+      { $push: { history: history }, $set: { cartItems: [] } },
+      { new: true },
+      (err, user) => {
+        if (err) return res.json({ success: false, err });
+
+        const payment = Payment(transactionData);
+        payment.save();
+
+        res.status(200).json({
+          success: true,
+          cartItems: user.cartItems,
+          cartDetail: [],
+        });
+      }
+    );
+  } catch (e) {
+    res.status(400).json({ msg: e.msg });
+  }
 });
 
 router.get('/orders', async (req, res) => {
@@ -176,6 +196,41 @@ router.get('/orders', async (req, res) => {
 
 router.get('/admin', auth, authRole('admin'), async (req, res) => {
   console.log(req.user);
+});
+
+router.get('/address/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) throw Error('No address exist');
+    res.json({ address: user.address });
+  } catch (e) {
+    res.status(400).json({ msg: e.message });
+  }
+});
+
+router.put('/address/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        address: {
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          tel: req.body.tel,
+          home: req.body.home,
+          country: req.body.country,
+          city: req.body.city,
+          region: req.body.region,
+          index: req.body.index,
+        },
+      },
+      { new: true }
+    );
+    if (!user) throw Error('No users exist');
+    res.status(200).json(user);
+  } catch (e) {
+    res.status(400).json({ msg: e.message });
+  }
 });
 
 export default router;

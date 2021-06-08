@@ -8,11 +8,12 @@ function Breadcrumbs({ crumbs, category }) {
   let { location } = useHistory()
   const pathnames = location.pathname.split('/').filter((x) => x)
   const gender = useSelector(({ app }) => app.gender)
+
   // console.log('crumbs', crumbs)
   // if (crumbs.length <= 1) {
   //   return null
   // }
-  console.log(category)
+  // console.log(category)
 
   const breadCrumbView = () => {
     const { pathname } = location
@@ -35,22 +36,24 @@ function Breadcrumbs({ crumbs, category }) {
         )}
         {pathnames.map((name, index) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
-          console.log(routeTo.includes('product'))
+          // console.log(routeTo.includes('product'))
           const isLast = index === pathnames.length - 1
           return routeTo.includes('product/') ? (
-            <li className="breadcrumbs__item">
-              <Link to={`/category/${category._id}`} className="breadcrumbs__link">
-                {category.name}
+            <li className="breadcrumbs__item" key={index}>
+              <Link
+                to={`/category/${category[0] && category[0]._id}`}
+                className="breadcrumbs__link">
+                {category[0] && category[0].name}
               </Link>
             </li>
           ) : routeTo.includes('/product') ? (
-            <li className="breadcrumbs__item">
+            <li className="breadcrumbs__item" key={index}>
               <Link to={`/${gender}`} className="breadcrumbs__link">
                 {gender}
               </Link>
             </li>
           ) : (
-            <li className="breadcrumbs__item">
+            <li className="breadcrumbs__item" key={index}>
               <Link to={`${routeTo}`} className="breadcrumbs__link">
                 {capatilize(name)}
               </Link>

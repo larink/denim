@@ -9,7 +9,7 @@ const ItemSchema = new Schema({
   imageUrl: { type: String, default: '', required: true },
   images: [{ type: String, default: '' }],
   descr: { type: String },
-  type: { type: String, required: true },
+  type: { type: String },
   oldPrice: { type: Number },
   price: { type: Number, required: true },
   gender: { type: String, required: true },
@@ -30,7 +30,7 @@ const ItemSchema = new Schema({
   countInStock: { type: Number, min: 0, required: true },
   rating: { type: String },
   numReviews: { type: String },
-  isFeatured: { type: Boolean },
+  isFeatured: { type: Boolean, default: false },
 });
 
 const Item = model('item', ItemSchema);

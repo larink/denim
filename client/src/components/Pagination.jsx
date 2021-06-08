@@ -11,7 +11,7 @@ function Pagination({ page }) {
 
   for (let index = 0; index < totalPages; index++) {
     pages.push(
-      <li className="pagination__item">
+      <li className="pagination__item" key={index}>
         <Link to={`/${gender}?page=${index + 1}`} className="pagination__link ">
           {index + 1}
         </Link>
@@ -35,7 +35,7 @@ function Pagination({ page }) {
     <ul className="pagination">
       {page > 1 ? (
         <li className="pagination__item">
-          <Link to={`/${gender}?page=${prevPage()}`} class="pagination__link">
+          <Link to={`/${gender}?page=${prevPage()}`} className="pagination__link">
             Назад
           </Link>
         </li>
@@ -44,7 +44,7 @@ function Pagination({ page }) {
       )}
       {pages}
       <li className="pagination__item">
-        <Link to={`/${gender}?page=${nextPage()}`} class="pagination__link">
+        <Link to={`/${gender}?page=${nextPage()}`} className="pagination__link">
           Вперед
         </Link>
       </li>
