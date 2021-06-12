@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {
   AUTH_ERROR,
+  GET_PAYMENTS,
   GET_USER_ORDERS,
   LOGIN_FAIL,
   LOGIN_SUCCESS,
@@ -10,6 +11,8 @@ import {
   SET_USER_ADDRESS,
   USER_LOADED,
   USER_LOADING,
+  UPDATE_USER,
+  PROFILE_UPDATED,
 } from '../constants'
 import { returnErrors } from './error'
 
@@ -95,11 +98,31 @@ export const getOrders = (id) => (dispatch, getState) => {
     })
 }
 
-export const setAddress = (id, address) => (dispatch, getState) => {
+export const getPayments = () => (dispatch, getState) => {
+  axios.get(`http://localhost:5000/api/users/payments`, tokenConfig(getState)).then(({ data }) => {
+    dispatch(getAllPayments(data))
+  })
+}
+
+export const setAddress = (address) => (dispatch, getState) => {
   axios
-    .put(`http://localhost:5000/api/users/address/${id}`, address, tokenConfig(getState))
+    .put(`http://localhost:5000/api/users/address`, address, tokenConfig(getState))
     .then(({ data }) => {
-      dispatch(setUserAddress(data))
+      dispatch({
+        type: UPDATE_USER,
+        payload: data,
+      })
+    })
+}
+
+export const updateUser = (body) => (dispatch, getState) => {
+  axios
+    .put(`http://localhost:5000/api/auth/update`, body, tokenConfig(getState))
+    .then(({ data }) => {
+      dispatch({
+        type: UPDATE_USER,
+        payload: data,
+      })
     })
 }
 
@@ -111,6 +134,11 @@ export const logout = () => {
 
 export const getUserOrders = (payload) => ({
   type: GET_USER_ORDERS,
+  payload,
+})
+
+export const getAllPayments = (payload) => ({
+  type: GET_PAYMENTS,
   payload,
 })
 

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import SecondHeader from '../components/SecondHeader'
+import { getPayments } from '../redux/actions/auth'
 import {
   createCategory,
   createProduct,
-  fetchItems,
   getCategories,
   getItems,
   updateProduct,
 } from '../redux/actions/products'
+import Product from '../components/Product'
 
 function AdminPage() {
   const dispatch = useDispatch()
   const { gender } = useSelector(({ app }) => app)
-  const { sortBy } = useSelector(({ filters }) => filters)
+  const { payments } = useSelector(({ auth }) => auth)
   const { categories, items } = useSelector(({ products }) => products)
   const [categoryForm, setCategoryForm] = useState({
     name: '',
@@ -45,8 +46,6 @@ function AdminPage() {
     countInStock: 1,
   })
 
-  console.log(changeProductForm)
-
   useEffect(() => {
     dispatch(getCategories(productForm.gender))
   }, [productForm.gender])
@@ -57,6 +56,7 @@ function AdminPage() {
 
   useEffect(() => {
     dispatch(getItems())
+    dispatch(getPayments())
   }, [])
 
   const changeHandler = (e) => {
@@ -150,266 +150,306 @@ function AdminPage() {
 
   return (
     <div className="site-container">
-      <SecondHeader />
-      <h1>Админ-панель сайта</h1>
-      <div className="">
-        <h2>Добавить товар</h2>
-        <form action="">
+      <div className="container">
+        <SecondHeader />
+        <h1>Админ-панель сайта</h1>
+        <div className="">
+          <h2>Все проведенные оплаты</h2>
+          <div className="">
+            {payments &&
+              payments.map((payment) => (
+                <div className="payment">
+                  <div className="payment__user">
+                    Пользователь:
+                    <div className="">{payment.user.name}</div>
+                    <div className="">{payment.user.email}</div>
+                    Адрес доставки:
+                    <div className="">
+                      {payment.user.address && payment.user.address.firstName}{' '}
+                      {payment.user.address && payment.user.address.lastName}
+                    </div>
+                    <div className="">{payment.user.address && payment.user.address.tel}</div>
+                    <div className="">{payment.user.address && payment.user.address.home}</div>
+                    <div className="">{payment.user.address && payment.user.address.country}</div>
+                    <div className="">{payment.user.address && payment.user.address.city}</div>
+                    <div className="">{payment.user.address && payment.user.address.region}</div>
+                    <div className="">{payment.user.address && payment.user.address.index}</div>
+                  </div>
+                  <div className="">
+                    Заказанные товары:
+                    <ul className="payment__products">
+                      {payment.products.map((product) => (
+                        <Product key={product.id} {...product} />
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+        <div className="">
+          <h2>Добавить товар</h2>
+          <form action="">
+            <label htmlFor="">
+              Наименование товара:
+              <input
+                type="text"
+                name="product/name"
+                value={productForm.name}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Ссылка на картинку товара:
+              <input
+                type="text"
+                name="product/imageUrl"
+                value={productForm.imageUrl}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Описание товара:
+              <input
+                type="text"
+                name="product/description"
+                value={productForm.description}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Цена товара:
+              <input
+                type="text"
+                name="product/price"
+                value={productForm.price}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Пол:
+              <select
+                name="product/gender"
+                value={productForm.gender}
+                onChange={(e) => changeHandler(e)}>
+                <option value="men">Мужской</option>
+                <option value="women">Женский</option>
+              </select>
+            </label>
+            <label htmlFor="">
+              Бренд товара:
+              <input
+                type="text"
+                name="product/brand"
+                value={productForm.brand}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Цвет товара:
+              <input
+                type="text"
+                name="product/color"
+                value={productForm.color}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Доступные размеры:
+              <input
+                type="text"
+                name="product/sizes"
+                value={productForm.sizes}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Категория товара:
+              {/* <input type="text" name="category" /> */}
+              <select
+                name="product/categoryProduct"
+                value={productForm.category}
+                onChange={(e) => changeHandler(e)}>
+                {categories &&
+                  categories.map((category) => (
+                    <option value={category._id}>{category.name}</option>
+                  ))}
+              </select>
+            </label>
+            <label htmlFor="">
+              Количество в наличии:
+              <input
+                type="number"
+                name="product/countInStock"
+                value={productForm.countInStock}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <button type="submit" onClick={productFromSubmitHandler}>
+              Добавить
+            </button>
+          </form>
+        </div>
+        <div className="">
+          <h2>Изменить товар:</h2>
+          <form action="">
+            <label htmlFor="">
+              Выберите товар:
+              <select
+                name="changeProduct/id"
+                value={changeProductForm.id}
+                onChange={(e) => changeHandler(e)}>
+                {items &&
+                  items.map((product) => (
+                    <option value={product._id} key={product._id}>
+                      {product.name} Пол {product.gender === 'men' ? 'Мужской' : 'Женский'}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label htmlFor="">
+              Наименование товара:
+              <input
+                type="text"
+                name="changeProduct/name"
+                value={changeProductForm.name}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Ссылка на картинку товара:
+              <input
+                type="text"
+                name="changeProduct/imageUrl"
+                value={changeProductForm.imageUrl}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Описание товара:
+              <input
+                type="text"
+                name="changeProduct/description"
+                value={changeProductForm.description}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Цена товара:
+              <input
+                type="text"
+                name="changeProduct/price"
+                value={changeProductForm.price}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Пол:
+              <select
+                name="changeProduct/gender"
+                value={changeProductForm.gender}
+                onChange={(e) => changeHandler(e)}>
+                <option value="men">Мужской</option>
+                <option value="women">Женский</option>
+              </select>
+            </label>
+            <label htmlFor="">
+              Бренд товара:
+              <input
+                type="text"
+                name="changeProduct/brand"
+                value={changeProductForm.brand}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Цвет товара:
+              <input
+                type="text"
+                name="changeProduct/color"
+                value={changeProductForm.color}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Доступные размеры:
+              <input
+                type="text"
+                name="changeProduct/sizes"
+                value={changeProductForm.sizes}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <label htmlFor="">
+              Категория товара:
+              {/* <input type="text" name="category" /> */}
+              <select
+                name="changeProduct/categoryProduct"
+                value={changeProductForm.category}
+                onChange={(e) => changeHandler(e)}>
+                {categories &&
+                  categories.map((category) => (
+                    <option value={category._id}>{category.name}</option>
+                  ))}
+              </select>
+            </label>
+            <label htmlFor="">
+              Количество в наличии:
+              <input
+                type="number"
+                name="changeProduct/countInStock"
+                value={changeProductForm.countInStock}
+                onChange={(e) => changeHandler(e)}
+              />
+            </label>
+            <button type="submit" onClick={changeProductFromSubmitHandler}>
+              Изменить
+            </button>
+          </form>
+        </div>
+        <div className="">
+          <h2>Добавить категорию</h2>
+          <form action="">
+            <label htmlFor="">
+              Название категории:
+              <input
+                type="name"
+                name="category/name"
+                value={categoryForm.name}
+                onChange={(e) => changeHandler(e)}
+                required
+              />
+            </label>
+            <label htmlFor="">
+              Для какого пола категория:
+              <select
+                name="category/gender"
+                value={categoryForm.gender}
+                onChange={(e) => changeHandler(e)}>
+                <option value="men">Мужской</option>
+                <option value="women">Женский</option>
+              </select>
+            </label>
+            <button type="submit" onClick={categoryFromSubmitHandler}>
+              Добавить
+            </button>
+          </form>
+        </div>
+        <div className="">
+          <h2>Выдать пользователю роль</h2>
           <label htmlFor="">
-            Наименование товара:
-            <input
-              type="text"
-              name="product/name"
-              value={productForm.name}
-              onChange={(e) => changeHandler(e)}
-            />
+            ID пользователя
+            <input type="text" />
           </label>
           <label htmlFor="">
-            Ссылка на картинку товара:
-            <input
-              type="text"
-              name="product/imageUrl"
-              value={productForm.imageUrl}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Описание товара:
-            <input
-              type="text"
-              name="product/description"
-              value={productForm.description}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Цена товара:
-            <input
-              type="text"
-              name="product/price"
-              value={productForm.price}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Пол:
-            <select
-              name="product/gender"
-              value={productForm.gender}
-              onChange={(e) => changeHandler(e)}>
-              <option value="men">Мужской</option>
-              <option value="women">Женский</option>
+            Роль
+            <select name="" id="">
+              <option value="customer">Покупатель</option>
+              <option value="employer">Работник</option>
+              <option value="admin">Админ</option>
             </select>
           </label>
-          <label htmlFor="">
-            Бренд товара:
-            <input
-              type="text"
-              name="product/brand"
-              value={productForm.brand}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Цвет товара:
-            <input
-              type="text"
-              name="product/color"
-              value={productForm.color}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Доступные размеры:
-            <input
-              type="text"
-              name="product/sizes"
-              value={productForm.sizes}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Категория товара:
-            {/* <input type="text" name="category" /> */}
-            <select
-              name="product/categoryProduct"
-              value={productForm.category}
-              onChange={(e) => changeHandler(e)}>
-              {categories &&
-                categories.map((category) => <option value={category._id}>{category.name}</option>)}
-            </select>
-          </label>
-          <label htmlFor="">
-            Количество в наличии:
-            <input
-              type="number"
-              name="product/countInStock"
-              value={productForm.countInStock}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <button type="submit" onClick={productFromSubmitHandler}>
-            Добавить
-          </button>
-        </form>
-      </div>
-      <div className="">
-        <h2>Изменить товар:</h2>
-        <form action="">
-          <label htmlFor="">
-            Выберите товар:
-            <select
-              name="changeProduct/id"
-              value={changeProductForm.id}
-              onChange={(e) => changeHandler(e)}>
-              {items &&
-                items.map((product) => (
-                  <option value={product._id} key={product._id}>
-                    {product.name} Пол {product.gender === 'men' ? 'Мужской' : 'Женский'}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label htmlFor="">
-            Наименование товара:
-            <input
-              type="text"
-              name="changeProduct/name"
-              value={changeProductForm.name}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Ссылка на картинку товара:
-            <input
-              type="text"
-              name="changeProduct/imageUrl"
-              value={changeProductForm.imageUrl}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Описание товара:
-            <input
-              type="text"
-              name="changeProduct/description"
-              value={changeProductForm.description}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Цена товара:
-            <input
-              type="text"
-              name="changeProduct/price"
-              value={changeProductForm.price}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Пол:
-            <select
-              name="changeProduct/gender"
-              value={changeProductForm.gender}
-              onChange={(e) => changeHandler(e)}>
-              <option value="men">Мужской</option>
-              <option value="women">Женский</option>
-            </select>
-          </label>
-          <label htmlFor="">
-            Бренд товара:
-            <input
-              type="text"
-              name="changeProduct/brand"
-              value={changeProductForm.brand}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Цвет товара:
-            <input
-              type="text"
-              name="changeProduct/color"
-              value={changeProductForm.color}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Доступные размеры:
-            <input
-              type="text"
-              name="changeProduct/sizes"
-              value={changeProductForm.sizes}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <label htmlFor="">
-            Категория товара:
-            {/* <input type="text" name="category" /> */}
-            <select
-              name="changeProduct/categoryProduct"
-              value={changeProductForm.category}
-              onChange={(e) => changeHandler(e)}>
-              {categories &&
-                categories.map((category) => <option value={category._id}>{category.name}</option>)}
-            </select>
-          </label>
-          <label htmlFor="">
-            Количество в наличии:
-            <input
-              type="number"
-              name="changeProduct/countInStock"
-              value={changeProductForm.countInStock}
-              onChange={(e) => changeHandler(e)}
-            />
-          </label>
-          <button type="submit" onClick={changeProductFromSubmitHandler}>
-            Изменить
-          </button>
-        </form>
-      </div>
-      <div className="">
-        <h2>Добавить категорию</h2>
-        <form action="">
-          <label htmlFor="">
-            Название категории:
-            <input
-              type="name"
-              name="category/name"
-              value={categoryForm.name}
-              onChange={(e) => changeHandler(e)}
-              required
-            />
-          </label>
-          <label htmlFor="">
-            Для какого пола категория:
-            <select
-              name="category/gender"
-              value={categoryForm.gender}
-              onChange={(e) => changeHandler(e)}>
-              <option value="men">Мужской</option>
-              <option value="women">Женский</option>
-            </select>
-          </label>
-          <button type="submit" onClick={categoryFromSubmitHandler}>
-            Добавить
-          </button>
-        </form>
-      </div>
-      <div className="">
-        <h2>Выдать пользователю роль</h2>
-        <label htmlFor="">
-          ID пользователя
-          <input type="text" />
-        </label>
-        <label htmlFor="">
-          Роль
-          <select name="" id="">
-            <option value="customer">Покупатель</option>
-            <option value="employer">Работник</option>
-            <option value="admin">Админ</option>
-          </select>
-        </label>
+        </div>
       </div>
     </div>
   )

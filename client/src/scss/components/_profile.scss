@@ -1,6 +1,4 @@
 .profile {
-  padding: 0 40px;
-
   &__title {
     font-size: 22px;
     font-weight: 500;
@@ -11,6 +9,16 @@
   &__wrapper {
     max-width: 940px;
     margin: 0 auto;
+  }
+
+  .main-link {
+    span {
+      margin-right: 5px;
+    }
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
 }
 
@@ -91,6 +99,7 @@
 }
 
 .profile-info {
+  margin-bottom: 15px;
   &__item {
     &:not(:last-child) {
       margin-bottom: 15px;
@@ -163,10 +172,12 @@
 }
 
 .address-edit {
+  margin-top: 30px;
+
   &__title {
     font-size: 22px;
     font-weight: 500;
-    margin: 30px 0 20px 0;
+    margin-bottom: 20px;
   }
 }
 
@@ -203,5 +214,19 @@
       background-color: $tundora;
       transition: all 0.3s;
     }
+  }
+}
+
+.go-back {
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  span {
+    margin-left: 5px;
   }
 }

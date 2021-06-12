@@ -11,6 +11,7 @@ import {
 
 const initialState = {
   items: [],
+  searchedItems: [],
   currentPage: 1,
   totalPages: 1,
   categories: [],
@@ -28,7 +29,7 @@ export const productsReducer = (state = initialState, action) => {
     case SET_SEARCHED_ITEMS: {
       return {
         ...state,
-        items: action.payload,
+        searchedItems: action.payload,
       }
     }
     case SET_CATEGORIES: {

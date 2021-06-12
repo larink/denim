@@ -19,7 +19,7 @@ export const fetchItems =
     await axios
       // .get(`http://localhost:3001/products?_sort=${sortBy.type}&_order=${sortBy.order}`)
       .get(
-        `http://localhost:5000/api/items/${gender}?page=${page}${category}&sort=${sortBy}${choosenSize}&price=${
+        `http://localhost:5000/api/items/products/${gender}?page=${page}${category}&sort=${sortBy}${choosenSize}&price=${
           minPrice || 0
         }<${maxPrice || 99999}${brandQuery}`,
       )
@@ -30,6 +30,17 @@ export const fetchItems =
         console.log(err)
       })
   }
+
+export const fetchPopularItems = (gender) => async (dispatch) => {
+  await axios
+    .get(`${API}/items/products/${gender}/popular`)
+    .then(({ data }) => {
+      dispatch(setItems(data))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 
 export const getItems = () => async (dispatch) => {
   await axios
@@ -57,8 +68,7 @@ export const fetchItem = (id, currentSize) => async (dispatch) => {
 }
 
 export const updateProduct = (gender, body) => (dispatch) => {
-  console.log(body.id)
-  axios.put(`${API}/items/${gender}/${body.id}`, body).then(({ data }) => {
+  axios.put(`${API}/items/products/${gender}/${body.id}`, body).then(({ data }) => {
     console.log('Product updated', data)
   })
 }

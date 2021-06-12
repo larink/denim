@@ -31,6 +31,7 @@ const ItemSchema = new Schema({
   rating: { type: String },
   numReviews: { type: String },
   isFeatured: { type: Boolean, default: false },
+  isPopular: { type: Boolean, default: false },
 });
 
 const Item = model('item', ItemSchema);

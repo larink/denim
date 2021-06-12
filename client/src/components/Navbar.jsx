@@ -1,16 +1,15 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { setGenderState } from '../redux/actions/filters'
 
 function Navbar() {
   const dispatch = useDispatch()
-  let { state } = useLocation()
-  console.log(state)
 
   const getGenderName = (e) => {
     const genderName = e.target.href.split('/')[3].split('-')[0]
-    dispatch(setGenderState(genderName))
+    console.log(genderName)
+    if (genderName !== 'search') dispatch(setGenderState(genderName))
   }
 
   return (

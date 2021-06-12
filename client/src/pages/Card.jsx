@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import CardAdminForm from '../components/CardAdminForm'
 import { addCartItem } from '../redux/actions/cart'
 
 import {
@@ -18,9 +19,11 @@ function Card() {
   const dispatch = useDispatch()
   const { product, isLoaded, category } = useSelector(({ currentProduct }) => currentProduct)
   const gender = useSelector(({ app }) => app.gender)
-  const user = useSelector(({ auth }) => auth.user)
+  const { user, isAuthenticated } = useSelector(({ auth }) => auth)
   const [currentSize, setCurrentSize] = useState(null)
   const [chooseAlert, setChooseAlert] = useState(false)
+  const [logonAlert, setLogonAlert] = useState(false)
+  const [addButtonPressed, setAddButtonPressed] = useState(false)
 
   useEffect(() => {
     dispatch(fetchItem(params.id, currentSize))
@@ -39,15 +42,30 @@ function Card() {
     }
   }, [isLoaded])
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLogonAlert(false)
+    } else {
+      setLogonAlert(true)
+    }
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    if (addButtonPressed) {
+      setTimeout(() => {
+        setAddButtonPressed(!addButtonPressed)
+      }, 5000)
+    }
+  }, [addButtonPressed])
+
   const addToCart = () => {
     if (user !== null) {
       if (currentSize !== null) {
         dispatch(addCartItem(user._id, product._id, currentSize))
+        setAddButtonPressed(!addButtonPressed)
       } else {
         setChooseAlert(!chooseAlert)
       }
-    } else {
-      // localStorage.setItem('cartItems', JSON.stringify(products))
     }
   }
 
@@ -61,6 +79,14 @@ function Card() {
       return 'size-select__btn--active'
     } else {
       return ''
+    }
+  }
+
+  const isAdmin = () => {
+    if (user.role && user.role === 'admin') {
+      return true
+    } else {
+      return false
     }
   }
 
@@ -129,14 +155,42 @@ function Card() {
                             Пожалуйста, выберите имеющийся в наличии размер
                           </div>
                         )}
+                        {logonAlert && (
+                          <div className="choose-alert">
+                            Пожалуйста, войдите в аккаунт или зарегестрируйте его, чтобы добавлять
+                            товар в корзину
+                          </div>
+                        )}
                         <button
-                          className="btn-reset card-info__btn card-info__btn--tocart"
-                          onClick={addToCart}>
-                          Добавить в корзину
+                          className={`btn-reset card-info__btn card-info__btn--tocart ${
+                            !isAuthenticated ? 'disabled' : ''
+                          }`}
+                          onClick={addToCart}
+                          disabled={!isAuthenticated}>
+                          {addButtonPressed ? (
+                            <span>
+                              <svg
+                                version="1.1"
+                                x="0px"
+                                y="0px"
+                                width="45.701px"
+                                height="45.7px"
+                                viewBox="0 0 45.701 45.7">
+                                <g>
+                                  <path
+                                    d="M20.687,38.332c-2.072,2.072-5.434,2.072-7.505,0L1.554,26.704c-2.072-2.071-2.072-5.433,0-7.504
+			c2.071-2.072,5.433-2.072,7.505,0l6.928,6.927c0.523,0.522,1.372,0.522,1.896,0L36.642,7.368c2.071-2.072,5.433-2.072,7.505,0
+			c0.995,0.995,1.554,2.345,1.554,3.752c0,1.407-0.559,2.757-1.554,3.752L20.687,38.332z"
+                                  />
+                                </g>
+                              </svg>
+                              Товар добавлен
+                            </span>
+                          ) : (
+                            <span>Добавить в корзину</span>
+                          )}
                         </button>
-                        <button className="btn-reset card-info__btn card-info__btn--towishlist">
-                          Добавить в желаемое
-                        </button>
+                        {isAdmin() ? <CardAdminForm gender={gender} product={product} /> : null}
                         <div className="card-info__bottom card-bottom">
                           <div className="card-bottom__item">
                             <span>Sku:</span>FW511

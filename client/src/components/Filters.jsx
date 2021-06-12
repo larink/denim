@@ -16,11 +16,10 @@ function Filters({ sortBy, gender, page }) {
   const [visbileColor, setVisbileColor] = useState(false)
   const [visbileSizes, setVisbileSizes] = useState(false)
   const params = new URLSearchParams(useLocation().search)
+  const sizeQuery = params.get('size')
+  const categoryQuery = params.get('category')
 
   useEffect(() => {
-    const sizeQuery = params.get('size')
-    const categoryQuery = params.get('category')
-
     dispatch(fetchItems(sortBy, gender, page, categoryQuery, sizeQuery))
   }, [])
 

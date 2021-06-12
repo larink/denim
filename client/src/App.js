@@ -14,6 +14,7 @@ import { routes } from './utils/routesList'
 import Breadcrumbs from './components/Breadcrumbs'
 import CategoryPage from './pages/CategoryPage'
 import AdminPage from './pages/AdminPage'
+import CheckoutPage from './pages/CheckoutPage'
 
 function App() {
   const dispatch = useDispatch()
@@ -79,6 +80,7 @@ function App() {
           component={() => (!isAuthenticated ? <Logon /> : <Redirect to="/" />)}
         />
         <Route path="/cart" exact component={Cart} />
+        <Route path="/cart/checkout" exact component={CheckoutPage} />
         <Route path="/search" exact component={Catalog} />
         <Route path="/profile" component={Profile} />
         <Route path="/profile" component={() => <Redirect to="/profile/account" />} />

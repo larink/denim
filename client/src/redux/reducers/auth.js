@@ -1,16 +1,19 @@
 import {
   AUTH_ERROR,
   GET_CART_ITEMS,
+  GET_PAYMENTS,
   GET_USER_ORDERS,
   LOGIN_FAIL,
   LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
   ON_SUCCESS_BUY,
+  PROFILE_UPDATED,
   REGISTER_FAIL,
   REGISTER_SUCCESS,
   REMOVE_CART_ITEM,
   SET_CART_ITEM,
   SET_USER_ADDRESS,
+  UPDATE_USER,
   USER_LOADED,
   USER_LOADING,
 } from '../constants'
@@ -42,6 +45,13 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         ...action.payload,
+        isAuthenticated: true,
+        isLoading: false,
+      }
+    case UPDATE_USER:
+      return {
+        ...state,
+        user: { ...action.payload },
         isAuthenticated: true,
         isLoading: false,
       }
@@ -101,6 +111,11 @@ const auth = (state = initialState, action) => {
           ...state.user,
           address: action.payload.address,
         },
+      }
+    case GET_PAYMENTS:
+      return {
+        ...state,
+        payments: action.payload,
       }
     default:
       return state

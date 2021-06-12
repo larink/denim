@@ -1,0 +1,113 @@
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
+import { setAddress } from '../redux/actions/auth'
+
+function AddressEdit() {
+  const dispatch = useDispatch()
+  let history = useHistory()
+  const { user } = useSelector(({ auth }) => auth)
+  const [firstName, setFirstName] = useState(null)
+  const [lastName, setLastName] = useState(null)
+  const [phone, setPhone] = useState(null)
+  const [country, setCountry] = useState(null)
+  const [home, setHome] = useState(null)
+  const [city, setCity] = useState(null)
+  const [region, setRegion] = useState(null)
+  const [postalCode, setPostalCode] = useState(null)
+  const handleFirstName = (e) => setFirstName(e.target.value)
+  const handleLastName = (e) => setLastName(e.target.value)
+  const handlePhone = (e) => setPhone(e.target.value)
+  const handleCountry = (e) => setCountry(e.target.value)
+  const handleAddress = (e) => setHome(e.target.value)
+  const handleCity = (e) => setCity(e.target.value)
+  const handleRegion = (e) => setRegion(e.target.value)
+  const handlePostalCode = (e) => setPostalCode(e.target.value)
+
+  const onAddressEditSubmit = (e) => {
+    e.preventDefault()
+
+    const newAddress = {
+      firstName,
+      lastName,
+      tel: phone,
+      country,
+      home,
+      city,
+      region,
+      index: postalCode,
+    }
+
+    dispatch(setAddress(newAddress))
+  }
+
+  return (
+    <div className="address-edit">
+      <button className="go-back btn-reset" onClick={() => history.goBack()}>
+        <svg version="1.1" x="0px" y="0px" viewBox="0 0 492 492">
+          <g>
+            <path
+              d="M198.608,246.104L382.664,62.04c5.068-5.056,7.856-11.816,7.856-19.024c0-7.212-2.788-13.968-7.856-19.032l-16.128-16.12
+			C361.476,2.792,354.712,0,347.504,0s-13.964,2.792-19.028,7.864L109.328,227.008c-5.084,5.08-7.868,11.868-7.848,19.084
+			c-0.02,7.248,2.76,14.028,7.848,19.112l218.944,218.932c5.064,5.072,11.82,7.864,19.032,7.864c7.208,0,13.964-2.792,19.032-7.864
+			l16.124-16.12c10.492-10.492,10.492-27.572,0-38.06L198.608,246.104z"
+            />
+          </g>
+        </svg>
+        <span>Назад</span>
+      </button>
+      <h2 className="address-edit__title">Изменить адрес достави</h2>
+      <form action="" className="address-form">
+        <label className="address-form__label" htmlFor="">
+          Имя:
+          <input className="address-form__input" type="text" onChange={handleFirstName} required />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Фамилия:
+          <input className="address-form__input" type="text" onChange={handleLastName} required />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Мобильный телефон:
+          <input
+            className="address-form__input"
+            type="number"
+            maxLength={11}
+            onChange={handlePhone}
+            required
+          />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Страна:
+          <input className="address-form__input" type="text" onChange={handleCountry} required />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Адрес:
+          <input className="address-form__input" type="text" onChange={handleAddress} required />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Город:
+          <input className="address-form__input" type="text" onChange={handleCity} required />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Регион:
+          <input className="address-form__input" type="text" onChange={handleRegion} required />
+        </label>
+        <label className="address-form__label" htmlFor="">
+          Почтовый индекс:
+          <input
+            className="address-form__input"
+            type="number"
+            maxLength="6"
+            onChange={handlePostalCode}
+            required
+          />
+        </label>
+        <button type="submit" className="address-form__btn btn-reset" onClick={onAddressEditSubmit}>
+          Сохранить
+        </button>
+      </form>
+    </div>
+  )
+}
+
+export default AddressEdit

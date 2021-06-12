@@ -1,74 +1,52 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import { getOrders, setAddress } from '../../redux/actions/auth'
+import { getOrders } from '../../redux/actions/auth'
+import AddressEdit from '../AddressEdit'
+import ProfileEdit from '../ProfileEdit'
 import Order from './Order'
 
 function Page() {
   const dispatch = useDispatch()
-  const user = useSelector(({ auth }) => auth.user)
+  const { user, isAuthenticated } = useSelector(({ auth }) => auth)
   const { orders, address } = useSelector(({ auth }) => auth.user)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [country, setCountry] = useState('')
-  const [home, setHome] = useState('')
-  const [city, setCity] = useState('')
-  const [region, setRegion] = useState('')
-  const [postalCode, setPostalCode] = useState('')
-  const error = useSelector(({ error }) => error)
   let history = useHistory()
   let { id } = useParams()
-
-  const handleFirstName = (e) => setFirstName(e.target.value)
-  const handleLastName = (e) => setLastName(e.target.value)
-  const handlePhone = (e) => setPhone(e.target.value)
-  const handleCountry = (e) => setCountry(e.target.value)
-  const handleAddress = (e) => setHome(e.target.value)
-  const handleCity = (e) => setCity(e.target.value)
-  const handleRegion = (e) => setRegion(e.target.value)
-  const handlePostalCode = (e) => setPostalCode(e.target.value)
 
   useEffect(() => {
     if (user) dispatch(getOrders(user._id))
   }, [])
 
-  const onAddressEditSubmit = (e) => {
-    e.preventDefault()
-
-    const newAddress = {
-      firstName,
-      lastName,
-      tel: phone,
-      country,
-      home,
-      city,
-      region,
-      index: postalCode,
-    }
-
-    dispatch(setAddress(user._id, newAddress))
-    history.push('/profile/address')
-  }
+  useEffect(() => {
+    if (!isAuthenticated) history.push('/logon')
+  }, [isAuthenticated])
 
   const setProfilePage = () => {
-    if (id === 'account') {
+    if (id === 'account' && !history.location.pathname.includes('account/edit')) {
       return (
-        <>
+        <div className="profile">
           <h1 className="profile__title">Учетная запись</h1>
           <ul className="profile__info profile-info">
             <li className="profile-info__item profile-info__item-name">
-              <span>Имя</span> {user && user.name}
+              <span>Имя пользователя</span> {user && user.name}
             </li>
             <li className="profile-info__item profile-info__item-email">
               <span>Эл. Почта</span> {user && user.email}
             </li>
-            <li className="profile-info__item profile-info__item-password">
-              <span>Пароль</span> ********
-            </li>
           </ul>
-        </>
+          <Link to={`${id}/edit`} className="main-link">
+            <span>Изменить</span>
+            <svg
+              height="492pt"
+              viewBox="0 0 492.49284 492"
+              width="492pt"
+              xmlns="http://www.w3.org/2000/svg">
+              <path d="m304.140625 82.472656-270.976563 270.996094c-1.363281 1.367188-2.347656 3.09375-2.816406 4.949219l-30.035156 120.554687c-.898438 3.628906.167969 7.488282 2.816406 10.136719 2.003906 2.003906 4.734375 3.113281 7.527344 3.113281.855469 0 1.730469-.105468 2.582031-.320312l120.554688-30.039063c1.878906-.46875 3.585937-1.449219 4.949219-2.8125l271-270.976562zm0 0" />
+              <path d="m476.875 45.523438-30.164062-30.164063c-20.160157-20.160156-55.296876-20.140625-75.433594 0l-36.949219 36.949219 105.597656 105.597656 36.949219-36.949219c10.070312-10.066406 15.617188-23.464843 15.617188-37.714843s-5.546876-27.648438-15.617188-37.71875zm0 0" />
+            </svg>
+          </Link>
+        </div>
       )
     } else if (id === 'orders') {
       return (
@@ -113,83 +91,9 @@ function Page() {
         </div>
       )
     } else if (id === 'address' && history.location.pathname.includes('address/edit')) {
-      return (
-        <div className="address-edit">
-          <h2 className="address-edit__title">Изменить адрес достави</h2>
-          <form action="" className="address-form">
-            <label className="address-form__label" htmlFor="">
-              Имя:
-              <input
-                className="address-form__input"
-                type="text"
-                onChange={handleFirstName}
-                required
-              />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Фамилия:
-              <input
-                className="address-form__input"
-                type="text"
-                onChange={handleLastName}
-                required
-              />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Мобильный телефон:
-              <input
-                className="address-form__input"
-                type="number"
-                maxLength={11}
-                onChange={handlePhone}
-                required
-              />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Страна:
-              <input
-                className="address-form__input"
-                type="text"
-                onChange={handleCountry}
-                required
-              />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Адрес:
-              <input
-                className="address-form__input"
-                type="text"
-                onChange={handleAddress}
-                required
-              />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Город:
-              <input className="address-form__input" type="text" onChange={handleCity} required />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Регион:
-              <input className="address-form__input" type="text" onChange={handleRegion} required />
-            </label>
-            <label className="address-form__label" htmlFor="">
-              Почтовый индекс:
-              <input
-                className="address-form__input"
-                type="number"
-                maxLength="6"
-                onChange={handlePostalCode}
-                required
-              />
-            </label>
-            <button
-              type="submit"
-              className="address-form__btn btn-reset"
-              onClick={onAddressEditSubmit}>
-              Сохранить
-            </button>
-          </form>
-        </div>
-      )
+      return <AddressEdit />
+    } else if (id === 'account' && history.location.pathname.includes('account/edit')) {
+      return <ProfileEdit />
     }
   }
 

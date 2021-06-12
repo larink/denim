@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import LoginModal from '../components/auth/LoginModal'
@@ -16,13 +16,21 @@ function Logon() {
     history.goBack()
   }, [clearErrors])
 
+  const handleToggleHome = useCallback(() => {
+    // Clear errors
+    dispatch(clearErrors())
+    history.push('/')
+  }, [clearErrors])
+
   return (
     <div className="logon">
       <div className="logon__top logon-top">
-        <Link to="/" className="logon-top__link logo">
+        <button className="logon-top__link logo btn-reset" onClick={handleToggleHome}>
           Denim
-        </Link>
-        <Link to="/" className="logon-top__link logon-top__link--go-back" onClick={handleToggle}>
+        </button>
+        <button
+          className="logon-top__link logon-top__link--go-back btn-reset"
+          onClick={handleToggle}>
           <svg
             version="1.1"
             id="Capa_1"
@@ -38,7 +46,7 @@ function Logon() {
               />
             </g>
           </svg>
-        </Link>
+        </button>
       </div>
       <div className="logon__wrapper logon-wrapper">
         <h1 className="logon__title">Войти в систему</h1>

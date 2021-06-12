@@ -8,11 +8,11 @@
   color: $white;
 
   &.women {
-    background-image: url('https://images.pexels.com/photos/6322920/pexels-photo-6322920.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+    background-image: url('../../assets/img/women-bg.jpeg');
   }
 
   &.men {
-    background-image: url('https://images.pexels.com/photos/6492149/pexels-photo-6492149.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+    background-image: url('../../assets/img/men-bg.jpeg');
   }
 
   &::before {
