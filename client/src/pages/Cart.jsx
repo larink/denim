@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import CartItem from '../components/CartItem'
-import { loadUser } from '../redux/actions/auth'
 import { getCartItems, onSuccessBuy } from '../redux/actions/cart'
 import Paypal from '../utils/Paypal'
+import Checkout from '../components/Checkout'
 
 function Cart() {
   const dispatch = useDispatch()
   const { isAuthenticated, user, cartDetail } = useSelector(({ auth }) => auth)
 
+  const [cartText, setCartText] = useState('Ваша корзина пуста')
   const [Total, setTotal] = useState(0)
   const [totalQuantity, setTotalQuantity] = useState(0)
   const [ShowTotal, setShowTotal] = useState(false)
   const [ShowSuccess, setShowSuccess] = useState(false)
-
-  console.log(ShowSuccess)
+  const [showCreditModal, setShowCreditModal] = useState(false)
 
   useEffect(() => {
     let cartItems = []
@@ -25,12 +25,7 @@ function Cart() {
           cartItems.push(item._id)
         })
         dispatch(getCartItems(cartItems, user.cartItems))
-
-        // if (cartDetail) {
-        //   calculateTotal()
-        // }
         setTotalQuantity(user.cartItems.length)
-        // setShowTotal(true)
       }
     }
   }, [user && user.cartItems])
@@ -47,6 +42,10 @@ function Cart() {
     setShowTotal(true)
   }
 
+  const showCreditHandle = () => {
+    setShowCreditModal(!showCreditModal)
+  }
+
   useEffect(() => {
     calculateTotal()
   }, [cartDetail])
@@ -59,9 +58,9 @@ function Cart() {
         user: user,
       }),
     )
-
-    user && user.cartItems.length === 0 ? setShowSuccess(true) : setShowSuccess(false)
+    setCartText('Покупка успешно совершена')
   }
+
   const transactionError = () => {
     console.log('Paypal error')
   }
@@ -96,7 +95,7 @@ function Cart() {
       <div className="cart-wrapper">
         <ul className="cart-items">
           {cartDetail && cartDetail.length === 0 ? (
-            <p>Ваша корзина пуста</p>
+            <p className="cart-text">{cartText}</p>
           ) : isAuthenticated && cartDetail ? (
             cartDetail.map((item) => <CartItem key={item._id} {...item} user={user} />)
           ) : ShowSuccess ? (
@@ -113,19 +112,37 @@ function Cart() {
             <p>Ваша корзина пуста</p>
           )}
         </ul>
-        {cartDetail && cartDetail.length === 0 ? (
-          ''
+        {user !== null && Object.values(user.address).length === 0 ? (
+          <div className="cart__no-user">
+            <p>Сначала укажите адрес доставки</p>
+            <Link to="/profile" className="cart__link">
+              Перейти
+            </Link>
+          </div>
         ) : isAuthenticated && cartDetail ? (
           <div className="cart-pay">
-            <p>
-              Всего {totalQuantity} товара на сумму {Total} ₽
-            </p>
-            <Paypal
-              toPay={Total}
-              onSuccess={transactionSuccess}
-              transactionError={transactionError}
-              transactionCancel={transactionCancel}
-            />
+            <p>Всего {Total} руб.</p>
+            <div>
+              <button className="cart-pay__btn btn-reset" onClick={showCreditHandle}>
+                кредитная карта
+              </button>
+            </div>
+            {showCreditModal && (
+              <Checkout
+                total={Total}
+                showCreditHandle={showCreditHandle}
+                setCartText={setCartText}
+              />
+            )}
+            <span className="cart-pay__span">Или</span>
+            <div>
+              <Paypal
+                toPay={Total}
+                onSuccess={transactionSuccess}
+                transactionError={transactionError}
+                transactionCancel={transactionCancel}
+              />
+            </div>
           </div>
         ) : (
           ''

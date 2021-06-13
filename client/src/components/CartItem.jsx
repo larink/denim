@@ -7,7 +7,7 @@ function CartItem({ _id, imageUrl, name, oldPrice, price, quantity, user, size }
   const dispatch = useDispatch()
 
   const removeFromCart = () => {
-    dispatch(removeCartItem(_id, user.id))
+    dispatch(removeCartItem(_id, user._id))
   }
 
   return (

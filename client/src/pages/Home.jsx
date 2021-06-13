@@ -1,22 +1,11 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
-import { loadUser } from '../redux/actions/auth'
-import { fetchItems } from '../redux/actions/products'
+import MainProducts from '../components/MainProducts'
 
 function Home() {
-  const dispatch = useDispatch()
   const gender = useSelector(({ app }) => app.gender)
-  const sortBy = useSelector(({ filters }) => filters.sortBy)
-
-  // useEffect(() => {
-  //   dispatch(loadUser())
-  // }, [])
-
-  useEffect(() => {
-    dispatch(fetchItems(sortBy, gender))
-  }, [sortBy])
 
   return (
     <>
@@ -25,94 +14,14 @@ function Home() {
         <section className={`hero ${gender}`}>
           <div className="container hero__container">
             <h1 className="visually-hidden">Denim - best shop!</h1>
-            <div className="banner-slider">
-              <div className="swiper-wrapper">
-                <div className="swiper-slide">
-                  <div className="hero__content">
-                    <h2 className="hero__title">Fall-Winter Clearance Sales</h2>
-                    <p className="hero__descr">
-                      All Sale Items are Final Sale / Free Shipping on All Orders
-                    </p>
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="hero__content">
-                    <h2 className="hero__title">Fall-Winter Clearance Sales</h2>
-                    <p className="hero__descr">
-                      All Sale Items are Final Sale / Free Shipping on All Orders
-                    </p>
-                    <img src="img/girl.png" className="hero__image" alt="Girl" aria-hidden="true" />
-                  </div>
-                </div>
-                <div className="swiper-slide">
-                  <div className="hero__content">
-                    <h2 className="hero__title">Fall-Winter Clearance Sales</h2>
-                    <p className="hero__descr">
-                      All Sale Items are Final Sale / Free Shipping on All Orders
-                    </p>
-                    <img src="img/girl.png" className="hero__image" alt="Girl" aria-hidden="true" />
-                  </div>
-                </div>
+            <div className="swiper-slide">
+              <div className="hero__content">
+                {/* <h2 className="hero__title">Это – ASOS</h2> */}
               </div>
-              <div className="swiper-pagination banner-pag"></div>
-            </div>
-            <div className="marketing">
-              <div className="marketing__image">
-                <img src="img/product-image.jpg" alt="" />
-              </div>
-              <div className="marketing__text">
-                <span className="marketing__descr">Someone purchaed a</span>
-                <h3 className="marketing__title">Faux shearling double-breasted coat</h3>
-                <span className="marketing__when-from">15 minutes ago London, Great Britain</span>
-              </div>
-              <button className="btn-reset marketing__close" aria-label="Close"></button>
             </div>
           </div>
         </section>
-        <section className="banners">
-          <h2 className="visually-hidden">Banners</h2>
-          <div className="container banners__container">
-            <ul className="banners__list">
-              <li className="banners__item">
-                <article className="banners__article banners-article banners-article--midseason">
-                  <h3 className="banners-article__title">Women's Mid-Season</h3>
-                  <a href="#" className="banners-article__link main-link">
-                    Shop Now
-                  </a>
-                </article>
-              </li>
-              <li className="banners__item">
-                <article className="banners__article banners-article banners-article--summer">
-                  <h3 className="banners-article__title">Summer Romance</h3>
-                  <a href="#" className="banners-article__link main-link">
-                    Shop Now
-                  </a>
-                </article>
-              </li>
-              <li className="banners__item">
-                <article className="banners__article banners-article banners-article--acces">
-                  <h3 className="banners-article__title">20% Off All Accessories</h3>
-                  <a href="#" className="banners-article__link main-link">
-                    Shop Now
-                  </a>
-                </article>
-              </li>
-            </ul>
-          </div>
-        </section>
-        <div className="shop-banners">
-          <h2 className="visually-hidden">Banners</h2>
-          <div className="container shop-banners__container">
-            <a href="" className="shop-banners__banner shop-banner shop-banner--men">
-              <h3 className="shop-banner__title">Men’s Sportswear</h3>
-              <span className="shop-banner__text main-link main-link--white">Read more</span>
-            </a>
-            <a href="" className="shop-banners__banner shop-banner shop-banner--women">
-              <h3 className="shop-banner__title">Find your fit</h3>
-              <span className="shop-banner__text main-link main-link--white">Read more</span>
-            </a>
-          </div>
-        </div>
+        <MainProducts />
       </main>
       <Footer />
     </>

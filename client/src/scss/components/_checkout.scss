@@ -1,0 +1,9 @@
+.checkout {
+  &__title {
+    text-transform: uppercase;
+    font-weight: 700;
+    color: $dark;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+  }
+}

@@ -1,11 +1,20 @@
 .main-products {
+  padding: 40px 0;
+
   &__container {
-    padding-top: 80px;
+    padding-top: 20px;
     padding-bottom: 30px;
 
     @include md {
       padding-bottom: 0;
     }
+  }
+
+  &__title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-align: center;
   }
 
   &__nav {
@@ -57,14 +66,14 @@
     svg {
       width: 12px;
       height: 21px;
-      fill: var(--color-dark);    
-      transition: transform .3s;
+      fill: var(--color-dark);
+      transition: transform 0.3s;
     }
 
     &:hover {
       svg {
         transform: translateY(5px);
-        transition: transform .3s;
+        transition: transform 0.3s;
       }
     }
 
@@ -95,7 +104,7 @@
       }
     }
 
-    &:nth-last-child(-n+5) {
+    &:nth-last-child(-n + 5) {
       margin-bottom: 0px;
 
       @include md {

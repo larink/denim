@@ -1,16 +1,13 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-function Pagination({ page }) {
-  const gender = useSelector(({ app }) => app.gender)
-  const totalPages = useSelector(({ products }) => products.totalPages)
+function AdminPaginaion({ page, totalAdminPages }) {
   const pages = []
 
-  for (let index = 0; index < totalPages; index++) {
+  for (let index = 0; index < totalAdminPages; index++) {
     pages.push(
       <li className="pagination__item" key={index}>
-        <Link to={`/${gender}?page=${index + 1}`} className="pagination__link ">
+        <Link to={`/admin?page=${index + 1}`} className="pagination__link ">
           {index + 1}
         </Link>
       </li>,
@@ -25,7 +22,7 @@ function Pagination({ page }) {
 
   const nextPage = () => {
     let nextPage = parseInt(page) + 1
-    if (nextPage > totalPages) return page
+    if (nextPage > totalAdminPages) return page
     return nextPage
   }
 
@@ -33,7 +30,7 @@ function Pagination({ page }) {
     <ul className="pagination">
       {page > 1 ? (
         <li className="pagination__item">
-          <Link to={`/${gender}?page=${prevPage()}`} className="pagination__link">
+          <Link to={`/admin?page=${prevPage()}`} className="pagination__link">
             Назад
           </Link>
         </li>
@@ -42,7 +39,7 @@ function Pagination({ page }) {
       )}
       {pages}
       <li className="pagination__item">
-        <Link to={`/${gender}?page=${nextPage()}`} className="pagination__link">
+        <Link to={`/admin?page=${nextPage()}`} className="pagination__link">
           Вперед
         </Link>
       </li>
@@ -50,4 +47,4 @@ function Pagination({ page }) {
   )
 }
 
-export default Pagination
+export default AdminPaginaion

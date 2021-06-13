@@ -8,6 +8,7 @@ import {
   SET_UPDATED,
 } from '../constants'
 import { tokenConfig } from './auth'
+import { returnErrors } from './error'
 
 export const addCartItem = (userId, productId, currentSize) => (dispatch) => {
   dispatch(setUpdated(true))
@@ -30,7 +31,9 @@ export const addCartItem = (userId, productId, currentSize) => (dispatch) => {
 
 export const getCartItems = (cartItems, userCart) => (dispatch) => {
   axios
-    .get(`http://localhost:5000/api/items/${'gender'}/products_by_id?id=${cartItems}&type=array`)
+    .get(
+      `http://localhost:5000/api/items/products/${'gender'}/products_by_id?id=${cartItems}&type=array`,
+    )
     .then(({ data }) => {
       console.log(data)
       userCart.forEach((cartItem) => {
@@ -49,14 +52,6 @@ export const getCartItems = (cartItems, userCart) => (dispatch) => {
 export const removeCartItem = (productId, userId) => (dispatch) => {
   dispatch(setUpdated(true))
 
-  // const config = {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // }
-
-  // const body = JSON.stringify({ id })
-
   axios
     .get(`http://localhost:5000/api/users/removeFromCart?_id=${userId}&product=${productId}`)
     .then(({ data }) => {
@@ -68,6 +63,7 @@ export const onSuccessBuy = (data) => (dispatch, getState) => {
   axios
     .post(`http://localhost:5000/api/users/successBuy`, data, tokenConfig(getState))
     .then(({ data }) => dispatch(successBuy(data)))
+    .catch((e) => dispatch(returnErrors(e.msg, e.status)))
 }
 
 const successBuy = (payload) => ({

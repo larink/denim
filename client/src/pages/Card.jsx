@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import CardAdminForm from '../components/CardAdminForm'
 import { addCartItem } from '../redux/actions/cart'
 
 import {
@@ -18,13 +19,18 @@ function Card() {
   const dispatch = useDispatch()
   const { product, isLoaded, category } = useSelector(({ currentProduct }) => currentProduct)
   const gender = useSelector(({ app }) => app.gender)
-  const user = useSelector(({ auth }) => auth.user)
+  const { user, isAuthenticated } = useSelector(({ auth }) => auth)
   const [currentSize, setCurrentSize] = useState(null)
   const [chooseAlert, setChooseAlert] = useState(false)
+  const [logonAlert, setLogonAlert] = useState(false)
+  const [addButtonPressed, setAddButtonPressed] = useState(false)
+
+  // console.log(product.brand && product.brand.replace(/\s/g, ''))
 
   useEffect(() => {
     dispatch(fetchItem(params.id, currentSize))
-    if (isLoaded) dispatch(getCategory(product.category))
+    if (isLoaded) dispatch(getCategory(gender, product.category))
+
     return () => {
       dispatch(removeCurrentProduct())
       dispatch(removeCategory())
@@ -32,22 +38,37 @@ function Card() {
   }, [params.id])
 
   useEffect(() => {
-    if (isLoaded) dispatch(getCategory(product.category))
+    if (isLoaded) dispatch(getCategory(gender, product.category))
 
     return () => {
       dispatch(removeCategory())
     }
   }, [isLoaded])
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      setLogonAlert(false)
+    } else {
+      setLogonAlert(true)
+    }
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    if (addButtonPressed) {
+      setTimeout(() => {
+        setAddButtonPressed(!addButtonPressed)
+      }, 5000)
+    }
+  }, [addButtonPressed])
+
   const addToCart = () => {
     if (user !== null) {
       if (currentSize !== null) {
-        dispatch(addCartItem(user.id, product._id, currentSize))
+        dispatch(addCartItem(user._id, product._id, currentSize))
+        setAddButtonPressed(!addButtonPressed)
       } else {
         setChooseAlert(!chooseAlert)
       }
-    } else {
-      // localStorage.setItem('cartItems', JSON.stringify(products))
     }
   }
 
@@ -62,6 +83,19 @@ function Card() {
     } else {
       return ''
     }
+  }
+
+  const isAdmin = () => {
+    if (user !== null && user.role && user.role === 'admin') {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  const validateBrand = (brand) => {
+    if (brand && brand.includes('&')) return brand.replace(/[^a-zA-Z0-9 ]/g, '')
+    return brand
   }
 
   return (
@@ -87,10 +121,14 @@ function Card() {
                     </div>
                     <div className="card-top__right">
                       <div className="card-info">
-                        <span className="card-info__prop product-prop best">Best Seller</span>
                         <h3 className="card-info__title">{product.name}</h3>
-                        <Link
+                        {/* <Link
                           to={`/brands/${product.brand && product.brand.trim()}`}
+                          className="card-info__brand main-link">
+                          {product.brand}s
+                        </Link> */}
+                        <Link
+                          to={`/${gender}/?brand=${product.brand && validateBrand(product.brand)}`}
                           className="card-info__brand main-link">
                           {product.brand}
                         </Link>
@@ -129,177 +167,50 @@ function Card() {
                             Пожалуйста, выберите имеющийся в наличии размер
                           </div>
                         )}
+                        {logonAlert && (
+                          <div className="choose-alert">
+                            Пожалуйста, войдите в аккаунт или зарегестрируйте его, чтобы добавлять
+                            товар в корзину
+                          </div>
+                        )}
                         <button
-                          className="btn-reset card-info__btn card-info__btn--tocart"
-                          onClick={addToCart}>
-                          Добавить в корзину
+                          className={`btn-reset card-info__btn card-info__btn--tocart ${
+                            !isAuthenticated ? 'disabled' : ''
+                          }`}
+                          onClick={addToCart}
+                          disabled={!isAuthenticated}>
+                          {addButtonPressed ? (
+                            <span>
+                              <svg
+                                version="1.1"
+                                x="0px"
+                                y="0px"
+                                width="45.701px"
+                                height="45.7px"
+                                viewBox="0 0 45.701 45.7">
+                                <g>
+                                  <path
+                                    d="M20.687,38.332c-2.072,2.072-5.434,2.072-7.505,0L1.554,26.704c-2.072-2.071-2.072-5.433,0-7.504
+			c2.071-2.072,5.433-2.072,7.505,0l6.928,6.927c0.523,0.522,1.372,0.522,1.896,0L36.642,7.368c2.071-2.072,5.433-2.072,7.505,0
+			c0.995,0.995,1.554,2.345,1.554,3.752c0,1.407-0.559,2.757-1.554,3.752L20.687,38.332z"
+                                  />
+                                </g>
+                              </svg>
+                              Товар добавлен
+                            </span>
+                          ) : (
+                            <span>Добавить в корзину</span>
+                          )}
                         </button>
-                        <button className="btn-reset card-info__btn card-info__btn--towishlist">
-                          Добавить в желаемое
-                        </button>
+                        {isAdmin() ? <CardAdminForm gender={gender} product={product} /> : null}
                         <div className="card-info__bottom card-bottom">
                           <div className="card-bottom__item">
-                            <span>Sku:</span>FW511
-                          </div>
-                          <div className="card-bottom__item">
                             <span>Категория:</span>
-                            <Link to={`/category/${product.type}`} className="main-link">
-                              {product.type}
+                            <Link
+                              to={`/${gender}/?category=${category[0] && category[0]._id}`}
+                              className="main-link">
+                              {category[0] && category[0].name}
                             </Link>
-                          </div>
-                        </div>
-                        <div className="card-bottom__social">
-                          <span>Share:</span>
-                          <ul className="social footer__social">
-                            <li className="social__item">
-                              <a
-                                href="#"
-                                className="social__link social__link--tw"
-                                aria-label="Go to twitter"></a>
-                            </li>
-                            <li className="social__item">
-                              <a
-                                href="#"
-                                className="social__link social__link--fb"
-                                aria-label="Go to facebook"></a>
-                            </li>
-                            <li className="social__item">
-                              <a
-                                href="#"
-                                className="social__link social__link--inst"
-                                aria-label="Go to instagram"></a>
-                            </li>
-                            <li className="social__item">
-                              <a
-                                href="#"
-                                className="social__link social__link--pint"
-                                aria-label="Go to pinterest"></a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="card-content__bottom">
-                  <div className="card-bottom__content">
-                    <div className="container container-narrow">
-                      <div className="card-description">
-                        <div className="card-description__left">
-                          <ul className="card-description__navigation" data-simplebar>
-                            <li className="card-description__item">
-                              <a
-                                href="#one"
-                                className="card-description__link card-description__link--active">
-                                Description
-                              </a>
-                            </li>
-                            <li className="card-description__item">
-                              <a href="#two" className="card-description__link">
-                                Additional information
-                              </a>
-                            </li>
-                            <li className="card-description__item">
-                              <a href="#three" className="card-description__link">
-                                Reviews 2
-                              </a>
-                            </li>
-                          </ul>
-                        </div>
-                        <div className="card-description__right">
-                          <div
-                            className="card-description__content card-description__content--active"
-                            data-target="#one">
-                            <p>
-                              123Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure dolor in
-                              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est laborum. Sed ut
-                              perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                              doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-                              inventore veritatis et quasi architecto beatae vitae dicta sunt
-                              explicabo.
-                            </p>
-                            <p>
-                              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-                              fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
-                              sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
-                              sit amet, consectetur, adipisci velit, sed quia non numquam eius modi
-                              tempora incidunt ut labore et dolore magnam aliquam quaerat
-                              voluptatem.
-                            </p>
-                          </div>
-                          <div className="card-description__content" data-target="#two">
-                            <p>
-                              222Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure dolor in
-                              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est laborum. Sed ut
-                              perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                              doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-                              inventore veritatis et quasi architecto beatae vitae dicta sunt
-                              explicabo.
-                            </p>
-                            <p>
-                              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-                              fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
-                              sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
-                              sit amet, consectetur, adipisci velit, sed quia non numquam eius modi
-                              tempora incidunt ut labore et dolore magnam aliquam quaerat
-                              voluptatem.
-                            </p>
-                          </div>
-                          <div className="card-description__content" data-target="#three">
-                            <p>
-                              333Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure dolor in
-                              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est laborum. Sed ut
-                              perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                              doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-                              inventore veritatis et quasi architecto beatae vitae dicta sunt
-                              explicabo.
-                            </p>
-                            <p>
-                              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-                              fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
-                              sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
-                              sit amet, consectetur, adipisci velit, sed quia non numquam eius modi
-                              tempora incidunt ut labore et dolore magnam aliquam quaerat
-                              voluptatem.
-                            </p>
-                          </div>
-                          <div className="card-description__content" data-target="#four">
-                            <p>
-                              444Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                              minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                              aliquip ex ea commodo consequat. Duis aute irure dolor in
-                              reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                              pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                              culpa qui officia deserunt mollit anim id est laborum. Sed ut
-                              perspiciatis unde omnis iste natus error sit voluptatem accusantium
-                              doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-                              inventore veritatis et quasi architecto beatae vitae dicta sunt
-                              explicabo.
-                            </p>
-                            <p>
-                              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut
-                              fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem
-                              sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor
-                              sit amet, consectetur, adipisci velit, sed quia non numquam eius modi
-                              tempora incidunt ut labore et dolore magnam aliquam quaerat
-                              voluptatem.
-                            </p>
                           </div>
                         </div>
                       </div>
