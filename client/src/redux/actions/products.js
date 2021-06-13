@@ -12,16 +12,16 @@ import {
 } from '../constants'
 
 export const fetchItems =
-  (sortBy, gender, page, categoryId, size, minPrice, maxPrice, brand) => async (dispatch) => {
+  (sortBy, gender, page, categoryId, size, price, brand) => async (dispatch) => {
     let category = categoryId ? `&category=${categoryId}` : ''
     let brandQuery = brand ? `&brand=${brand}` : ''
     let choosenSize = size ? `&size=${size}` : ''
+    let priceQuery = price === null ? `0<99999` : price
+
     await axios
       // .get(`http://localhost:3001/products?_sort=${sortBy.type}&_order=${sortBy.order}`)
       .get(
-        `http://localhost:5000/api/items/products/${gender}?page=${page}${category}&sort=${sortBy}${choosenSize}&price=${
-          minPrice || 0
-        }<${maxPrice || 99999}${brandQuery}`,
+        `http://localhost:5000/api/items/products/${gender}?page=${page}${category}&sort=${sortBy}${choosenSize}&price=${priceQuery}${brandQuery}`,
       )
       .then(({ data }) => {
         dispatch(setItems(data))

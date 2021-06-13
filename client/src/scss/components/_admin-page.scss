@@ -1,8 +1,29 @@
-.payment {
+.payments {
   display: flex;
+}
+
+.payment {
+  width: 33%;
+  display: flex;
+  justify-content: space-between;
+
+  &:not(:last-child) {
+    border-right: 1px solid $gray;
+    margin-right: 30px;
+  }
 
   &__user {
     margin-right: 40px;
+
+    span {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 700;
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
   }
 
   &__products {
@@ -14,5 +35,30 @@
     max-width: 150px;
     margin-right: 15px;
     width: 100%;
+  }
+}
+
+.admin-page {
+  form {
+    max-width: 400px;
+  }
+}
+
+.admin-form {
+  &__label {
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__select {
+    max-width: 206px;
+  }
+
+  &__input {
+    max-width: 200px;
   }
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 function Footer() {
   return (
@@ -7,69 +8,55 @@ function Footer() {
         <div className="footer__content">
           <div className="footer__top">
             <div className="footer__column">
-              <h3 className="footer__title">Customer service</h3>
+              <h3 className="footer__title">Обслуживание клиентов</h3>
               <ul className="footer__list">
                 <li className="footer__item">
                   <a href="tel: +8665972742" className="footer__link">
-                    Phone: +866.597.2742
+                    Номер телефона: +866.597.2742
                   </a>
                 </li>
                 <li className="footer__item">
                   <a href="#" className="footer__link">
-                    Live chat
+                    Чат
                   </a>
                 </li>
                 <li className="footer__item">
-                  <a href="#" className="footer__link">
-                    About Us
-                  </a>
-                </li>
-                <li className="footer__item">
-                  <a href="#" className="footer__link">
-                    Terms & Conditions
-                  </a>
+                  <Link to="/about-us" className="footer__link">
+                    О нас
+                  </Link>
                 </li>
               </ul>
             </div>
             <div className="footer__column">
-              <h3 className="footer__title">Company</h3>
+              <h3 className="footer__title">Компания</h3>
               <ul className="footer__list">
                 <li className="footer__item">
                   <a href="#" className="footer__link">
-                    What We Do
+                    Чем мы занимаемся
                   </a>
                 </li>
                 <li className="footer__item">
                   <a href="#" className="footer__link">
-                    Available Services
+                    Доступные услуги
                   </a>
                 </li>
                 <li className="footer__item">
                   <a href="#" className="footer__link">
-                    Latest Posts
-                  </a>
-                </li>
-                <li className="footer__item">
-                  <a href="#" className="footer__link">
-                    FAQs
+                    F.A.Q.
                   </a>
                 </li>
               </ul>
             </div>
             <div className="footer__column">
-              <h3 className="footer__title">Our newsletter</h3>
+              <h3 className="footer__title">Наши новости</h3>
               <form action="" className="footer__form subscribe-form">
-                <h4 className="subscribe-form__title">
-                  Join our list and get 15% off your first purchase!
-                </h4>
                 <label className="subscribe-form__field">
-                  <input type="email" required placeholder="Email Address" />
+                  <input type="email" required placeholder="Email" />
                   <button className="subscribe-form__btn btn-reset" type="submit">
-                    Subscribe
+                    Подписаться
                   </button>
                 </label>
               </form>
-              <span className="footer__text">*Don’t worry we don’t spam</span>
             </div>
           </div>
           <div className="footer__bottom">
@@ -77,17 +64,7 @@ function Footer() {
               <ul className="footer__list footer__list--row">
                 <li className="footer__item footer__item--row">
                   <a href="№" className="footer__link footer__link--row">
-                    Returns Policy
-                  </a>
-                </li>
-                <li className="footer__item footer__item--row">
-                  <a href="№" className="footer__link footer__link--row">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li className="footer__item footer__item--row">
-                  <a href="№" className="footer__link footer__link--row">
-                    Privacy Policy
+                    Политика конфиденциальности
                   </a>
                 </li>
               </ul>

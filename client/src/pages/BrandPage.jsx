@@ -31,12 +31,10 @@ function BrandPage() {
   const gender = useSelector(({ app }) => app.gender)
 
   const query = useQuery()
-  const history = useHistory()
   const page = query.get('page') || 1
-  const searchQuery = query.get('searchQuery')
 
   useEffect(() => {
-    dispatch(fetchItems(sortBy, gender, 1, undefined, 0, 99999, brand))
+    dispatch(fetchItems(sortBy, gender, 1, undefined, `0<99999`, brand))
   }, [sortBy])
 
   const onSelectItem = (item) => {

@@ -11,6 +11,7 @@ import {
   REGISTER_FAIL,
   REGISTER_SUCCESS,
   REMOVE_CART_ITEM,
+  SEARCH_USER,
   SET_CART_ITEM,
   SET_USER_ADDRESS,
   UPDATE_USER,
@@ -23,6 +24,8 @@ const initialState = {
   isAuthenticated: false,
   isLoading: false,
   user: null,
+  payments: {},
+  admin: {},
 }
 
 const auth = (state = initialState, action) => {
@@ -38,6 +41,7 @@ const auth = (state = initialState, action) => {
         isAuthenticated: true,
         isLoading: false,
         user: action.payload,
+        payments: {},
       }
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
@@ -116,6 +120,14 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         payments: action.payload,
+      }
+    case SEARCH_USER:
+      return {
+        ...state,
+        admin: {
+          ...state.admin,
+          searchedUser: action.payload,
+        },
       }
     default:
       return state

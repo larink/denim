@@ -3,6 +3,7 @@ import Cards from 'react-credit-cards'
 import 'react-credit-cards/es/styles-compiled.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { onSuccessBuy } from '../redux/actions/cart'
+import { validatePayment } from '../utils/helpers'
 
 function Checkout({ total, showCreditHandle, setCartText }) {
   const dispatch = useDispatch()
@@ -28,6 +29,15 @@ function Checkout({ total, showCreditHandle, setCartText }) {
       number: card.number,
       expiry: card.expiry,
     }
+
+    const { valid, message } = validatePayment(data)
+
+    if (!valid) {
+      alert(message)
+      return
+    }
+
+    if (valid) alert('Оплата совершена успешно')
 
     dispatch(
       onSuccessBuy({

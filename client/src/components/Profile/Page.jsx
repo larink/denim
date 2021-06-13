@@ -10,17 +10,13 @@ import Order from './Order'
 function Page() {
   const dispatch = useDispatch()
   const { user, isAuthenticated } = useSelector(({ auth }) => auth)
-  const { orders, address } = useSelector(({ auth }) => auth.user)
+  const { orders, address } = useSelector(({ auth }) => auth.user || {})
   let history = useHistory()
   let { id } = useParams()
 
   useEffect(() => {
     if (user) dispatch(getOrders(user._id))
   }, [])
-
-  useEffect(() => {
-    if (!isAuthenticated) history.push('/logon')
-  }, [isAuthenticated])
 
   const setProfilePage = () => {
     if (id === 'account' && !history.location.pathname.includes('account/edit')) {

@@ -51,17 +51,27 @@ router.get('/products/:gender', async (req, res) => {
     };
   }
 
-  if (req.query.brand) {
-    filter = {
-      gender: gender,
-      brand: req.query.brand,
-      price: { $gte: minPrice, $lte: maxPrice },
-    };
-  }
   if (req.query.size) {
     filter = {
       gender: gender,
       sizes: { $in: [parseInt(req.query.size)] },
+      price: { $gte: minPrice, $lte: maxPrice },
+    };
+  }
+
+  if (req.query.category && req.query.size) {
+    filter = {
+      gender: gender,
+      category: req.query.category,
+      sizes: { $in: [parseInt(req.query.size)] },
+      price: { $gte: minPrice, $lte: maxPrice },
+    };
+  }
+
+  if (req.query.brand) {
+    filter = {
+      gender: gender,
+      brand: req.query.brand,
       price: { $gte: minPrice, $lte: maxPrice },
     };
   }
@@ -132,7 +142,7 @@ router.get('/products/:gender/products_by_id', async (req, res) => {
  * @access  Public
  */
 
-router.get('/search', async (req, res) => {
+router.get('/search', auth, async (req, res) => {
   const { q, gender } = req.query;
 
   try {
@@ -168,26 +178,6 @@ router.get('/product/:id', async (req, res) => {
     res.status(400).json({ msg: e.message });
   }
 });
-
-// router.get('/sizes/:gender', async (req, res) => {
-//   console.log(req.params);
-
-//   try {
-//     const items = await Item.find({ gender: req.params.gender });
-//     if (!items) throw Error('No items');
-//     const arrayOfSizes = items.map((item) => item.sizes);
-//     let sizes = [];
-//     arrayOfSizes.forEach((item) => {
-//       sizes = item;
-//     });
-
-//     console.log(sizes);
-
-//     res.status(200).json(sizes);
-//   } catch (e) {
-//     res.status(400).json({ msg: e.message });
-//   }
-// });
 
 /**
  * @route   POST api/items
@@ -228,8 +218,8 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/products/:gender/:id', async (req, res) => {
-  // const category = await Category.findById(req.body.category);
-  // if (!category) return res.status(400).send('Неправильная категория');
+  const category = await Category.findById(req.body.category);
+  if (!category) return res.status(400).send('Неправильная категория');
 
   try {
     const prevItem = await Item.findById(req.params.id);

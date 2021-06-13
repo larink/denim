@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link, NavLink, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import { Link, NavLink, Route, Switch, useRouteMatch } from 'react-router-dom'
 import Logout from '../components/auth/Logout'
-import { getOrders } from '../redux/actions/auth'
 import Page from '../components/Profile/Page'
 
 function Profile() {
@@ -53,12 +52,10 @@ function Profile() {
           </div>
         </div>
         {user !== null && user.role === 'admin' ? (
-          <Link to={`/admin`} className="profile-menu__link">
+          <Link to={`/admin`} className="profile-menu__link profile-menu__link--admin">
             Админ-панель
           </Link>
-        ) : (
-          ''
-        )}
+        ) : null}
         <Switch>
           <Route path={`${path}/:id`}>
             <Page />

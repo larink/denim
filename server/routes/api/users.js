@@ -23,6 +23,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/search', async (req, res) => {
+  const { q } = req.query;
+
+  try {
+    const name = new RegExp(q, 'i');
+    const user = await User.findOne({
+      $or: [{ name }, { email: name }],
+    });
+
+    if (!user) throw Error('Мы все посмотрели, но ничего не нашли');
+
+    res.status(200).json(user);
+  } catch (e) {
+    res.status(404).json({ msg: e.message });
+  }
+});
+
 /**
  * @route   GET api/users/cartItems
  * @desc    Get all users
@@ -193,10 +210,20 @@ router.get('/orders', auth, async (req, res) => {
 });
 
 router.get('/payments', auth, async (req, res) => {
-  try {
-    const payments = await Payment.find();
+  const page = parseInt(req.query.page) || 1;
 
-    res.status(200).json(payments);
+  const PAGE_SIZE = 3;
+  const startIndex = (Number(page) - 1) * PAGE_SIZE;
+
+  try {
+    const total = await Payment.countDocuments();
+    const payments = await Payment.find().limit(PAGE_SIZE).skip(startIndex);
+
+    res.status(200).json({
+      payments,
+      currentPage: Number(page),
+      totalPages: Math.ceil(total / PAGE_SIZE),
+    });
   } catch (e) {
     res.status(400).json({ msg: e.msg });
   }

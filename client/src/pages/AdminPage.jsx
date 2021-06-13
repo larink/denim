@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import SecondHeader from '../components/SecondHeader'
-import { getPayments } from '../redux/actions/auth'
+import { getPayments, getUser, updateUser } from '../redux/actions/auth'
 import {
   createCategory,
   createProduct,
@@ -10,16 +11,34 @@ import {
   updateProduct,
 } from '../redux/actions/products'
 import Product from '../components/Product'
+import AdminPagination from '../components/AdminPaginaion'
+import { validatePayment } from '../utils/helpers'
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
 
 function AdminPage() {
   const dispatch = useDispatch()
   const { gender } = useSelector(({ app }) => app)
-  const { payments } = useSelector(({ auth }) => auth)
-  const { categories, items } = useSelector(({ products }) => products)
+  const { payments, totalPages } = useSelector(({ auth }) => auth.payments || {})
+  const { searchedUser } = useSelector(({ auth }) => auth.admin || {})
+  const { categories } = useSelector(({ products }) => products)
+
+  const query = useQuery()
+  const page = query.get('page') || 1
+
   const [categoryForm, setCategoryForm] = useState({
     name: '',
     gender: '',
   })
+
+  const [updateUserRoleForm, setUpdateUserRoleForm] = useState({
+    id: '',
+    name: '',
+    role: 'customer',
+  })
+
   const [productForm, setProductForm] = useState({
     name: '',
     imageUrl: '',
@@ -56,8 +75,11 @@ function AdminPage() {
 
   useEffect(() => {
     dispatch(getItems())
-    dispatch(getPayments())
   }, [])
+
+  useEffect(() => {
+    dispatch(getPayments(page))
+  }, [page])
 
   const changeHandler = (e) => {
     const target = e.target
@@ -68,6 +90,8 @@ function AdminPage() {
       setProductForm({ ...productForm, [target.name.split('/')[1]]: target.value })
     } else if (target.name.split('/').includes('changeProduct')) {
       setChangeProductForm({ ...productForm, [target.name.split('/')[1]]: target.value })
+    } else if (target.name.split('/').includes('updateRole')) {
+      setUpdateUserRoleForm({ ...updateUserRoleForm, [target.name.split('/')[1]]: target.value })
     }
   }
 
@@ -86,6 +110,15 @@ function AdminPage() {
       category: productForm.categoryProduct,
       countInStock: productForm.countInStock,
     }
+
+    const { valid, message } = validatePayment(product)
+
+    if (!valid) {
+      alert(message)
+      return
+    }
+
+    if (valid) alert('Товар успешно создан')
 
     dispatch(createProduct(product))
     setProductForm({
@@ -144,26 +177,62 @@ function AdminPage() {
       gender: categoryForm.gender,
     }
 
+    const { valid, message } = validatePayment(category)
+
+    if (!valid) {
+      alert(message)
+      return
+    }
+
+    if (valid) alert('Категория успешно создана')
+
     dispatch(createCategory(category))
     setCategoryForm({ name: '', gender: '' })
   }
 
+  const findUser = (e) => {
+    e.preventDefault()
+
+    dispatch(getUser(updateUserRoleForm.name))
+    if (searchedUser) setUpdateUserRoleForm({ ...updateUserRoleForm, id: searchedUser._id })
+  }
+
+  const roleFormSubmitHandler = (e) => {
+    e.preventDefault()
+
+    const newUser = {
+      id: updateUserRoleForm.id,
+      role: updateUserRoleForm.role,
+    }
+
+    const { valid, message } = validatePayment(newUser)
+
+    if (!valid) {
+      alert(message)
+      return
+    }
+
+    if (valid) alert('Пользователь успешно обновлен')
+
+    dispatch(updateUser(newUser))
+  }
+
   return (
-    <div className="site-container">
+    <div className="admin-page">
       <div className="container">
         <SecondHeader />
         <h1>Админ-панель сайта</h1>
         <div className="">
           <h2>Все проведенные оплаты</h2>
-          <div className="">
-            {payments &&
+          <div className="payments">
+            {payments && payments.length !== 0 ? (
               payments.map((payment) => (
-                <div className="payment">
+                <div className="payments_payment payment">
                   <div className="payment__user">
-                    Пользователь:
+                    <span>Пользователь:</span>
                     <div className="">{payment.user.name}</div>
                     <div className="">{payment.user.email}</div>
-                    Адрес доставки:
+                    <span>Адрес доставки:</span>
                     <div className="">
                       {payment.user.address && payment.user.address.firstName}{' '}
                       {payment.user.address && payment.user.address.lastName}
@@ -184,89 +253,104 @@ function AdminPage() {
                     </ul>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <p>Оплаты еще не были совершены</p>
+            )}
           </div>
+          {totalPages >= 1 ? <AdminPagination page={page} totalAdminPages={totalPages} /> : null}
         </div>
         <div className="">
           <h2>Добавить товар</h2>
-          <form action="">
-            <label htmlFor="">
+          <form action="admin-form">
+            <label htmlFor="" className="admin-form__label">
               Наименование товара:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/name"
                 value={productForm.name}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Ссылка на картинку товара:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/imageUrl"
                 value={productForm.imageUrl}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Описание товара:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/description"
                 value={productForm.description}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Цена товара:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/price"
                 value={productForm.price}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Пол:
               <select
+                className="admin-form__select"
                 name="product/gender"
+                className="admin-form__input"
                 value={productForm.gender}
                 onChange={(e) => changeHandler(e)}>
                 <option value="men">Мужской</option>
                 <option value="women">Женский</option>
               </select>
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Бренд товара:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/brand"
                 value={productForm.brand}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Цвет товара:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/color"
                 value={productForm.color}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Доступные размеры:
               <input
                 type="text"
+                className="admin-form__input"
                 name="product/sizes"
                 value={productForm.sizes}
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Категория товара:
               {/* <input type="text" name="category" /> */}
               <select
+                className="admin-form__select"
+                className="admin-form__input"
                 name="product/categoryProduct"
                 value={productForm.category}
                 onChange={(e) => changeHandler(e)}>
@@ -276,10 +360,11 @@ function AdminPage() {
                   ))}
               </select>
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Количество в наличии:
               <input
                 type="number"
+                className="admin-form__input"
                 name="product/countInStock"
                 value={productForm.countInStock}
                 onChange={(e) => changeHandler(e)}
@@ -291,126 +376,9 @@ function AdminPage() {
           </form>
         </div>
         <div className="">
-          <h2>Изменить товар:</h2>
-          <form action="">
-            <label htmlFor="">
-              Выберите товар:
-              <select
-                name="changeProduct/id"
-                value={changeProductForm.id}
-                onChange={(e) => changeHandler(e)}>
-                {items &&
-                  items.map((product) => (
-                    <option value={product._id} key={product._id}>
-                      {product.name} Пол {product.gender === 'men' ? 'Мужской' : 'Женский'}
-                    </option>
-                  ))}
-              </select>
-            </label>
-            <label htmlFor="">
-              Наименование товара:
-              <input
-                type="text"
-                name="changeProduct/name"
-                value={changeProductForm.name}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Ссылка на картинку товара:
-              <input
-                type="text"
-                name="changeProduct/imageUrl"
-                value={changeProductForm.imageUrl}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Описание товара:
-              <input
-                type="text"
-                name="changeProduct/description"
-                value={changeProductForm.description}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Цена товара:
-              <input
-                type="text"
-                name="changeProduct/price"
-                value={changeProductForm.price}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Пол:
-              <select
-                name="changeProduct/gender"
-                value={changeProductForm.gender}
-                onChange={(e) => changeHandler(e)}>
-                <option value="men">Мужской</option>
-                <option value="women">Женский</option>
-              </select>
-            </label>
-            <label htmlFor="">
-              Бренд товара:
-              <input
-                type="text"
-                name="changeProduct/brand"
-                value={changeProductForm.brand}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Цвет товара:
-              <input
-                type="text"
-                name="changeProduct/color"
-                value={changeProductForm.color}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Доступные размеры:
-              <input
-                type="text"
-                name="changeProduct/sizes"
-                value={changeProductForm.sizes}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <label htmlFor="">
-              Категория товара:
-              {/* <input type="text" name="category" /> */}
-              <select
-                name="changeProduct/categoryProduct"
-                value={changeProductForm.category}
-                onChange={(e) => changeHandler(e)}>
-                {categories &&
-                  categories.map((category) => (
-                    <option value={category._id}>{category.name}</option>
-                  ))}
-              </select>
-            </label>
-            <label htmlFor="">
-              Количество в наличии:
-              <input
-                type="number"
-                name="changeProduct/countInStock"
-                value={changeProductForm.countInStock}
-                onChange={(e) => changeHandler(e)}
-              />
-            </label>
-            <button type="submit" onClick={changeProductFromSubmitHandler}>
-              Изменить
-            </button>
-          </form>
-        </div>
-        <div className="">
           <h2>Добавить категорию</h2>
           <form action="">
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Название категории:
               <input
                 type="name"
@@ -420,9 +388,10 @@ function AdminPage() {
                 required
               />
             </label>
-            <label htmlFor="">
+            <label htmlFor="" className="admin-form__label">
               Для какого пола категория:
               <select
+                className="admin-form__select"
                 name="category/gender"
                 value={categoryForm.gender}
                 onChange={(e) => changeHandler(e)}>
@@ -435,21 +404,33 @@ function AdminPage() {
             </button>
           </form>
         </div>
-        <div className="">
+        <form className="">
           <h2>Выдать пользователю роль</h2>
-          <label htmlFor="">
-            ID пользователя
-            <input type="text" />
+          <label htmlFor="" className="admin-form__label">
+            Имя или почта пользователя ID: {updateUserRoleForm.id}
+            <input
+              type="text"
+              name="updateRole/name"
+              value={updateUserRoleForm.name}
+              onChange={(e) => changeHandler(e)}
+            />
           </label>
-          <label htmlFor="">
+          <button onClick={(e) => findUser(e)}>Найти</button>
+          <label htmlFor="" className="admin-form__label">
             Роль
-            <select name="" id="">
+            <select
+              className="admin-form__select"
+              name="updateRole/role"
+              id=""
+              onChange={(e) => changeHandler(e)}>
               <option value="customer">Покупатель</option>
-              <option value="employer">Работник</option>
               <option value="admin">Админ</option>
             </select>
           </label>
-        </div>
+          <button type="submit" onClick={roleFormSubmitHandler}>
+            Изменить
+          </button>
+        </form>
       </div>
     </div>
   )

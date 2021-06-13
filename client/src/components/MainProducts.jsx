@@ -20,7 +20,7 @@ function MainProducts() {
       <div className="container main-products__container">
         <ul className="main-products__list products-grid">
           {items ? (
-            items.map((product) => <Product key={product.index} {...product} />)
+            items.map((product) => <Product key={product._id} {...product} />)
           ) : (
             <li>Загрузка...</li>
           )}

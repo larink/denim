@@ -2,19 +2,20 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { setAddress } from '../redux/actions/auth'
+import { validatePayment } from '../utils/helpers'
 
 function AddressEdit() {
   const dispatch = useDispatch()
   let history = useHistory()
   const { user } = useSelector(({ auth }) => auth)
-  const [firstName, setFirstName] = useState(null)
-  const [lastName, setLastName] = useState(null)
-  const [phone, setPhone] = useState(null)
-  const [country, setCountry] = useState(null)
-  const [home, setHome] = useState(null)
-  const [city, setCity] = useState(null)
-  const [region, setRegion] = useState(null)
-  const [postalCode, setPostalCode] = useState(null)
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [country, setCountry] = useState('')
+  const [home, setHome] = useState('')
+  const [city, setCity] = useState('')
+  const [region, setRegion] = useState('')
+  const [postalCode, setPostalCode] = useState('')
   const handleFirstName = (e) => setFirstName(e.target.value)
   const handleLastName = (e) => setLastName(e.target.value)
   const handlePhone = (e) => setPhone(e.target.value)
@@ -60,16 +61,29 @@ function AddressEdit() {
       <form action="" className="address-form">
         <label className="address-form__label" htmlFor="">
           Имя:
-          <input className="address-form__input" type="text" onChange={handleFirstName} required />
+          <input
+            className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
+            type="text"
+            onChange={handleFirstName}
+            required
+          />
         </label>
         <label className="address-form__label" htmlFor="">
           Фамилия:
-          <input className="address-form__input" type="text" onChange={handleLastName} required />
+          <input
+            className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
+            type="text"
+            onChange={handleLastName}
+            required
+          />
         </label>
         <label className="address-form__label" htmlFor="">
           Мобильный телефон:
           <input
             className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
             type="number"
             maxLength={11}
             onChange={handlePhone}
@@ -78,24 +92,49 @@ function AddressEdit() {
         </label>
         <label className="address-form__label" htmlFor="">
           Страна:
-          <input className="address-form__input" type="text" onChange={handleCountry} required />
+          <input
+            className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
+            type="text"
+            onChange={handleCountry}
+            required
+          />
         </label>
         <label className="address-form__label" htmlFor="">
           Адрес:
-          <input className="address-form__input" type="text" onChange={handleAddress} required />
+          <input
+            className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
+            type="text"
+            onChange={handleAddress}
+            required
+          />
         </label>
         <label className="address-form__label" htmlFor="">
           Город:
-          <input className="address-form__input" type="text" onChange={handleCity} required />
+          <input
+            className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
+            type="text"
+            onChange={handleCity}
+            required
+          />
         </label>
         <label className="address-form__label" htmlFor="">
           Регион:
-          <input className="address-form__input" type="text" onChange={handleRegion} required />
+          <input
+            className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
+            type="text"
+            onChange={handleRegion}
+            required
+          />
         </label>
         <label className="address-form__label" htmlFor="">
           Почтовый индекс:
           <input
             className="address-form__input"
+            placeholder="Оставьте пустым, если не хотите менять"
             type="number"
             maxLength="6"
             onChange={handlePostalCode}

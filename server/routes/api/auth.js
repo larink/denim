@@ -57,6 +57,7 @@ router.post('/login', async (req, res) => {
 router.put('/update', auth, async (req, res) => {
   try {
     let hashed;
+    let id = req.user.id;
 
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -66,14 +67,17 @@ router.put('/update', auth, async (req, res) => {
       if (!hash) throw Error('Something went wrong hashing the password');
     }
 
-    const prevUser = await User.findById(req.user.id);
+    if (req.body.id) id = req.body.id;
+
+    const prevUser = await User.findById(id);
 
     const user = await User.findByIdAndUpdate(
-      req.user.id,
+      id,
       {
         name: req.body.name || prevUser.name,
         email: req.body.email || prevUser.email,
         password: hashed || prevUser.password,
+        role: req.body.role || prevUser.role,
       },
       { new: true }
     );

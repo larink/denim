@@ -19,8 +19,6 @@ function Search() {
   const page = query.get('page') || 1
   const searchQuery = query.get('searchQuery')
 
-  console.log(searchQuery)
-
   const handleVisible = () => {
     setSearchVisible(!searchVisible)
   }

@@ -19,17 +19,6 @@ function Home() {
                 {/* <h2 className="hero__title">Это – ASOS</h2> */}
               </div>
             </div>
-            <div className="marketing">
-              <div className="marketing__image">
-                <img src="img/product-image.jpg" alt="" />
-              </div>
-              <div className="marketing__text">
-                <span className="marketing__descr">Someone purchaed a</span>
-                <h3 className="marketing__title">Faux shearling double-breasted coat</h3>
-                <span className="marketing__when-from">15 minutes ago London, Great Britain</span>
-              </div>
-              <button className="btn-reset marketing__close" aria-label="Close"></button>
-            </div>
           </div>
         </section>
         <MainProducts />

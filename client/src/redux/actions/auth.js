@@ -13,6 +13,7 @@ import {
   USER_LOADING,
   UPDATE_USER,
   PROFILE_UPDATED,
+  SEARCH_USER,
 } from '../constants'
 import { returnErrors } from './error'
 
@@ -98,10 +99,12 @@ export const getOrders = (id) => (dispatch, getState) => {
     })
 }
 
-export const getPayments = () => (dispatch, getState) => {
-  axios.get(`http://localhost:5000/api/users/payments`, tokenConfig(getState)).then(({ data }) => {
-    dispatch(getAllPayments(data))
-  })
+export const getPayments = (page) => (dispatch, getState) => {
+  axios
+    .get(`http://localhost:5000/api/users/payments?page=${page}`, tokenConfig(getState))
+    .then(({ data }) => {
+      dispatch(getAllPayments(data))
+    })
 }
 
 export const setAddress = (address) => (dispatch, getState) => {
@@ -123,6 +126,14 @@ export const updateUser = (body) => (dispatch, getState) => {
         type: UPDATE_USER,
         payload: data,
       })
+    })
+}
+
+export const getUser = (name) => (dispatch, getState) => {
+  axios
+    .get(`http://localhost:5000/api/users/search?q=${name}`, tokenConfig(getState))
+    .then(({ data }) => {
+      dispatch({ type: SEARCH_USER, payload: data })
     })
 }
 
