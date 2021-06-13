@@ -16,15 +16,18 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     const items = await Item.find();
-    // .populate('category');
 
-    res.status(200).json(items);
+    res.status(200).json({
+      items,
+      currentPage: 1,
+      totalPages: 1,
+    });
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
 });
 
-router.get('/:gender', async (req, res) => {
+router.get('/products/:gender', async (req, res) => {
   const gender = req.params.gender;
   const page = parseInt(req.query.page) || 1;
   const priceRange = req.query.price;
@@ -44,6 +47,23 @@ router.get('/:gender', async (req, res) => {
     filter = {
       gender: gender,
       category: req.query.category,
+      price: { $gte: minPrice, $lte: maxPrice },
+    };
+  }
+
+  if (req.query.size) {
+    filter = {
+      gender: gender,
+      sizes: { $in: [parseInt(req.query.size)] },
+      price: { $gte: minPrice, $lte: maxPrice },
+    };
+  }
+
+  if (req.query.category && req.query.size) {
+    filter = {
+      gender: gender,
+      category: req.query.category,
+      sizes: { $in: [parseInt(req.query.size)] },
       price: { $gte: minPrice, $lte: maxPrice },
     };
   }
@@ -77,21 +97,25 @@ router.get('/:gender', async (req, res) => {
   }
 });
 
-router.get('/:gender/featured', async (req, res) => {
+router.get('/products/:gender/popular', async (req, res) => {
   const gender = req.params.gender;
 
   try {
-    const items = await Item.find({ gender, isFeatured: true });
+    const items = await Item.find({ gender, isPopular: true });
 
     if (!items) throw Error('No items');
 
-    res.status(200).json(items);
+    res.status(200).json({
+      items,
+      currentPage: 1,
+      totalPages: 1,
+    });
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
 });
 
-router.get('/:gender/products_by_id', async (req, res) => {
+router.get('/products/:gender/products_by_id', async (req, res) => {
   let type = req.query.type;
   let productIds;
 
@@ -105,6 +129,7 @@ router.get('/:gender/products_by_id', async (req, res) => {
 
   try {
     const items = await Item.find({ _id: { $in: productIds } });
+    console.log(items);
     res.status(200).send(items);
   } catch (e) {
     res.status(400).send({ msg: e.msg });
@@ -117,7 +142,7 @@ router.get('/:gender/products_by_id', async (req, res) => {
  * @access  Public
  */
 
-router.get('/search', async (req, res) => {
+router.get('/search', auth, async (req, res) => {
   const { q, gender } = req.query;
 
   try {
@@ -126,6 +151,7 @@ router.get('/search', async (req, res) => {
       gender,
       $or: [{ name }, { brand: name }],
     });
+
     if (!items) throw Error('Мы все посмотрели, но ничего не нашли');
 
     res.status(200).json(items);
@@ -191,28 +217,27 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/products/:gender/:id', async (req, res) => {
   const category = await Category.findById(req.body.category);
   if (!category) return res.status(400).send('Неправильная категория');
 
   try {
+    const prevItem = await Item.findById(req.params.id);
+
     const item = await Item.findByIdAndUpdate(
       req.params.id,
       {
-        name: req.body.name,
-        imageUrl: req.body.imageUrl,
-        descr: req.body.descr,
-        type: req.body.type,
-        oldPrice: req.body.oldPrice,
-        price: req.body.price,
-        gender: req.body.gender,
-        brand: req.body.brand,
-        sizes: req.body.sizes,
-        category: req.body.category,
-        countInStock: req.body.countInStock,
-        rating: req.body.rating,
-        numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured,
+        name: req.body.name || prevItem.name,
+        imageUrl: req.body.imageUrl || prevItem.imageUrl,
+        descr: req.body.descr || prevItem.descr,
+        type: req.body.type || prevItem.type,
+        price: req.body.price || prevItem.price,
+        gender: req.body.gender || prevItem.gender,
+        brand: req.body.brand || prevItem.brand,
+        sizes: req.body.sizes || prevItem.sizes,
+        category: req.body.category || prevItem.category,
+        countInStock: req.body.countInStock || prevItem.countInStock,
+        isPopular: req.body.isPopular || prevItem.isPopular,
       },
       { new: true }
     );
@@ -230,7 +255,7 @@ router.put('/:id', async (req, res) => {
  * @access  Private
  */
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/products/delete/:id', auth, async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
     if (!item) throw Error('No item found');

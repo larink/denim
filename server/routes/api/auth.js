@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import bcrypt from 'bcryptjs';
+import bcrypt, { hash } from 'bcryptjs';
 import config from '../../config';
 import jwt from 'jsonwebtoken';
 import { auth } from '../../middleware/auth';
@@ -21,16 +21,16 @@ router.post('/login', async (req, res) => {
 
   // Simple validation
   if (!email || !password) {
-    return res.status(400).json({ msg: 'Please enter all fields' });
+    return res.status(400).json({ msg: 'Заполните все поля' });
   }
 
   try {
     // Check for existing user
     const user = await User.findOne({ email });
-    if (!user) throw Error('User does not exist');
+    if (!user) throw Error('Пользователь не существует');
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw Error('Invalid credentials');
+    if (!isMatch) throw Error('Неправильные данные');
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: 3600 });
     if (!token) throw Error('Couldnt sign the token');
@@ -40,14 +40,49 @@ router.post('/login', async (req, res) => {
     res.status(200).json({
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         role: user.role,
         name: user.name,
         email: user.email,
         cartItems: user.cartItems,
         history: user.history,
+        address: user.address,
       },
     });
+  } catch (e) {
+    res.status(400).json({ msg: e.message });
+  }
+});
+
+router.put('/update', auth, async (req, res) => {
+  try {
+    let hashed;
+    let id = req.user.id;
+
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      if (!salt) throw Error('Something went wrong with bcrypt');
+
+      hashed = await bcrypt.hash(req.body.password, salt);
+      if (!hash) throw Error('Something went wrong hashing the password');
+    }
+
+    if (req.body.id) id = req.body.id;
+
+    const prevUser = await User.findById(id);
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        name: req.body.name || prevUser.name,
+        email: req.body.email || prevUser.email,
+        password: hashed || prevUser.password,
+        role: req.body.role || prevUser.role,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(user);
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }
@@ -64,12 +99,12 @@ router.post('/register', async (req, res) => {
 
   // Simple validation
   if (!name || !email || !password) {
-    return res.status(400).json({ msg: 'Please enter all fields' });
+    return res.status(400).json({ msg: 'Заполните все поля' });
   }
 
   try {
     const user = await User.findOne({ email });
-    if (user) throw Error('User already exists');
+    if (user) throw Error('Пользователь уже сущетсвует');
 
     const salt = await bcrypt.genSalt(10);
     if (!salt) throw Error('Something went wrong with bcrypt');
@@ -93,12 +128,13 @@ router.post('/register', async (req, res) => {
     res.status(200).json({
       token,
       user: {
-        id: savedUser._id,
+        _id: savedUser._id,
         role: savedUser.role,
         name: savedUser.name,
         email: savedUser.email,
         cartItems: savedUser.cartItems,
         history: savedUser.history,
+        address: savedUser.address,
       },
     });
   } catch (e) {

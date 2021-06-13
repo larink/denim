@@ -3,9 +3,14 @@ import Category from '../../models/Category';
 
 const router = new Router();
 
-router.get('/', async (req, res) => {
+router.get('/:gender', async (req, res) => {
+  let filters = { gender: req.params.gender };
+  if (req.query.id) {
+    filters = { _id: req.query.id, gender: req.params.gender };
+  }
+
   try {
-    const categories = await Category.find();
+    const categories = await Category.find(filters);
 
     res.status(200).json(categories);
   } catch (e) {
@@ -13,20 +18,21 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
-  try {
-    const categories = await Category.findById(req.params.id);
+// router.get('/:id', async (req, res) => {
+//   try {
+//     const categories = await Category.findById(req.params.id);
 
-    res.status(200).json(categories);
-  } catch (e) {
-    res.status(400).json({ msg: e.message });
-  }
-});
+//     res.status(200).json(categories);
+//   } catch (e) {
+//     res.status(400).json({ msg: e.message });
+//   }
+// });
 
 router.post('/', async (req, res) => {
   try {
     const category = await Category({
       name: req.body.name,
+      gender: req.body.gender,
     });
 
     category.save();
