@@ -1,7 +1,7 @@
 {
-  "name": "mern_typescript",
+  "name": "",
   "version": "1.0.0",
-  "description": "MERN Stack with ES6 and Typescript Boilerplate",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "client-install": "npm install --prefix client",
@@ -11,8 +11,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-  "author": "Brad Traversy",
-  "license": "MIT",
+  "author": "",
+  "license": "",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "concurrently": "^3.6.0",
