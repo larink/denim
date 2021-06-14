@@ -1,12 +1,18 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, NavLink, Route, Switch, useRouteMatch } from 'react-router-dom'
 import Logout from '../components/auth/Logout'
 import Page from '../components/Profile/Page'
+import { loadUser } from '../redux/actions/auth'
 
 function Profile() {
-  const user = useSelector(({ auth }) => auth.user)
+  const dispatch = useDispatch()
+  const { user } = useSelector(({ auth }) => auth)
   let { path, url } = useRouteMatch()
+
+  useEffect(() => {
+    dispatch(loadUser())
+  }, [])
 
   return (
     <div className="container">

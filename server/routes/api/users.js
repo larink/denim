@@ -166,9 +166,9 @@ router.post('/successBuy', auth, async (req, res) => {
     transactionData.products = history;
     transactionData.data = req.body.paymentData;
 
-    await User.findOneAndUpdate(
+    User.findOneAndUpdate(
       { _id: req.user.id },
-      { $push: { history: history }, $set: { cartItems: [] } },
+      { $push: { history: transactionData }, $set: { cartItems: [] } },
       { new: true },
       (err, user) => {
         if (err) return res.json({ success: false, err });
@@ -183,27 +183,6 @@ router.post('/successBuy', auth, async (req, res) => {
         });
       }
     );
-  } catch (e) {
-    res.status(400).json({ msg: e.msg });
-  }
-});
-
-router.get('/orders', auth, async (req, res) => {
-  let data = await Payment.find();
-  let ids = [];
-  let orderIds = [];
-  data.forEach((obj) => ids.push(obj.user.id));
-
-  try {
-    data.forEach((obj) => {
-      if (obj.user.id === req.query.userId) {
-        orderIds.push(obj._id);
-      }
-    });
-
-    const orders = await Payment.find({ _id: { $in: orderIds } });
-
-    res.status(200).json(orders);
   } catch (e) {
     res.status(400).json({ msg: e.msg });
   }

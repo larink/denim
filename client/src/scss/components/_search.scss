@@ -1,0 +1,114 @@
+.search {
+  width: 100%;
+  padding: 0 40px 25px 40px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: $white;
+  display: flex;
+  flex-direction: column;
+
+  .logo {
+    color: $dark;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+
+    input {
+      border: none;
+      background-color: transparent;
+      border-bottom: 1px solid $white;
+
+      @include md {
+        border-color: $black;
+      }
+
+      @include xs {
+        width: 80%;
+      }
+
+      &::placeholder {
+        color: $white;
+        font-size: 12px;
+        font-weight: 700;
+        @include md {
+          color: $black;
+        }
+      }
+    }
+
+    span {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      margin-right: 10px;
+
+      @include xs {
+        display: none;
+      }
+
+      svg {
+        @include md {
+          fill: $dark;
+        }
+      }
+    }
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 500;
+    }
+  }
+}
+
+.search-top {
+  // height: 50px;
+  padding: 15px 0;
+  position: relative;
+
+  &__link {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.search-form {
+  width: 80%;
+  align-self: center;
+  display: flex;
+
+  &__input {
+    width: 100%;
+    padding: 10px;
+  }
+
+  &__btn {
+    height: 100%;
+    padding: 10px;
+    background-color: $dark;
+    transition: filter 0.3s;
+
+    &:hover {
+      filter: opacity(0.8);
+      transition: filter 0.3s;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: $white;
+    }
+  }
+}

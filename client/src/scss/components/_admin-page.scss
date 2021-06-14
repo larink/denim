@@ -1,0 +1,80 @@
+.payments {
+  display: flex;
+  margin-bottom: 30px;
+
+  @include md {
+    flex-direction: column;
+  }
+}
+
+.payment {
+  width: 33%;
+  display: flex;
+  justify-content: space-between;
+
+  @include md {
+    width: 100%;
+    justify-content: center;
+  }
+
+  &:not(:last-child) {
+    border-right: 1px solid $gray;
+    margin-right: 30px;
+
+    @include md {
+      border: none;
+      border-bottom: 1px solid $gray;
+      margin-right: 0;
+    }
+  }
+
+  &__user {
+    margin-right: 40px;
+
+    span {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 700;
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  &__products {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .products-grid__item {
+    max-width: 150px;
+    margin-right: 15px;
+    width: 100%;
+  }
+}
+
+.admin-page {
+  form {
+    max-width: 400px;
+  }
+}
+
+.admin-form {
+  &__label {
+    display: flex;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__select {
+    max-width: 206px;
+  }
+
+  &__input {
+    max-width: 200px;
+  }
+}

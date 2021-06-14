@@ -91,14 +91,6 @@ export const login =
       })
   }
 
-export const getOrders = (id) => (dispatch, getState) => {
-  axios
-    .get(`http://localhost:5000/api/users/orders?userId=${id}`, tokenConfig(getState))
-    .then(({ data }) => {
-      dispatch(getUserOrders(data))
-    })
-}
-
 export const getPayments = (page) => (dispatch, getState) => {
   axios
     .get(`http://localhost:5000/api/users/payments?page=${page}`, tokenConfig(getState))
@@ -142,11 +134,6 @@ export const logout = () => {
     type: LOGOUT_SUCCESS,
   }
 }
-
-export const getUserOrders = (payload) => ({
-  type: GET_USER_ORDERS,
-  payload,
-})
 
 export const getAllPayments = (payload) => ({
   type: GET_PAYMENTS,

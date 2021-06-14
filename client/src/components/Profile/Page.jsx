@@ -1,22 +1,16 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router'
 import { Link } from 'react-router-dom'
-import { getOrders } from '../../redux/actions/auth'
 import AddressEdit from '../AddressEdit'
 import ProfileEdit from '../ProfileEdit'
 import Order from './Order'
 
 function Page() {
-  const dispatch = useDispatch()
-  const { user, isAuthenticated } = useSelector(({ auth }) => auth)
-  const { orders, address } = useSelector(({ auth }) => auth.user || {})
+  const { user } = useSelector(({ auth }) => auth)
+  const { address } = useSelector(({ auth }) => auth.user || {})
   let history = useHistory()
   let { id } = useParams()
-
-  useEffect(() => {
-    if (user) dispatch(getOrders(user._id))
-  }, [])
 
   const setProfilePage = () => {
     if (id === 'account' && !history.location.pathname.includes('account/edit')) {
@@ -49,10 +43,12 @@ function Page() {
         <>
           <h1 className="profile__title">Заказы</h1>
           <div className="profile__orders profile-orders">
-            {orders && orders.length === 0 ? (
+            {user !== null && user.history && user.history === 0 ? (
               <p>Вы еще не делали заказы</p>
-            ) : orders ? (
-              orders.map((order, index) => <Order key={order._id} {...order} index={index} />)
+            ) : user !== null && user.history ? (
+              user.history.map((order, index) => (
+                <Order key={order._id} {...order} user={user} index={index} />
+              ))
             ) : (
               ''
             )}

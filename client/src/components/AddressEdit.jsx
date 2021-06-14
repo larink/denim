@@ -1,13 +1,11 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router'
 import { setAddress } from '../redux/actions/auth'
-import { validatePayment } from '../utils/helpers'
 
 function AddressEdit() {
   const dispatch = useDispatch()
   let history = useHistory()
-  const { user } = useSelector(({ auth }) => auth)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [phone, setPhone] = useState('')

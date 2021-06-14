@@ -1,0 +1,70 @@
+.logon {
+  padding: 0 40px;
+
+  @include sm {
+    padding: 0 20px;
+  }
+
+  &__title {
+    font-size: 26px;
+    font-weight: 500;
+    margin: 30px 0 20px 0;
+  }
+
+  &__wrapper {
+    max-width: 940px;
+    margin: 0 auto;
+  }
+}
+
+.login,
+.register {
+  border: 1px solid rgba($grey, 0.4);
+}
+
+.logon-wrapper {
+  &__inner {
+    display: flex;
+
+    @include sm {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .login {
+      margin-right: 20px;
+
+      @include sm {
+        margin-right: 0;
+        margin-bottom: 30px;
+      }
+    }
+  }
+}
+
+.logon-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -40px;
+    width: 100vw;
+    height: 1px;
+    background-color: rgba($grey, 0.4);
+  }
+
+  &__link {
+    &--go-back {
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+}

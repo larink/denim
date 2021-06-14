@@ -1,0 +1,66 @@
+.nav {
+  &__list {
+    display: flex;
+
+    @include md {
+      display: flex;
+      flex-direction: column;
+      margin-left: 40px;
+    }
+
+    &--flex {
+      justify-content: space-between;
+
+      @include md {
+        position: fixed;
+        left: -150vw;
+        top: 30%;
+        transition: left 0.3s;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+  &__item {
+    &:not(:last-child) {
+      margin-right: 45px;
+
+      @include md {
+        margin-right: 0;
+        margin-bottom: 15px;
+      }
+    }
+  }
+  &__link {
+    &:hover {
+      @include md {
+        &::before {
+          opacity: 0;
+        }
+      }
+    }
+
+    &--current {
+      &::before {
+        opacity: 1;
+        transition: opacity 0.15s;
+
+        @include md {
+          opacity: 0;
+        }
+      }
+    }
+
+    @include md {
+      display: inline-block;
+      font-size: 19px;
+      margin-bottom: 10px;
+      color: $dark;
+    }
+  }
+
+  &--visible {
+    left: 0;
+    transform: left 0.3s;
+  }
+}
