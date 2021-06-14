@@ -1,6 +1,10 @@
 .logon {
   padding: 0 40px;
 
+  @include sm {
+    padding: 0 20px;
+  }
+
   &__title {
     font-size: 26px;
     font-weight: 500;
@@ -22,8 +26,18 @@
   &__inner {
     display: flex;
 
+    @include sm {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .login {
       margin-right: 20px;
+
+      @include sm {
+        margin-right: 0;
+        margin-bottom: 30px;
+      }
     }
   }
 }

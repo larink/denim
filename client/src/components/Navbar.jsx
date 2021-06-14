@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { setGenderState } from '../redux/actions/filters'
 
-function Navbar() {
+function Navbar({ burgerClicked }) {
   const dispatch = useDispatch()
 
   const getGenderName = (e) => {
@@ -13,7 +13,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="nav header__nav">
+    <nav className="nav header__nav" style={burgerClicked ? { left: 0 } : null}>
       <ul className="nav__list">
         <li className="nav__item">
           <NavLink

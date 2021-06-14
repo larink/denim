@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
 import { useSelector } from 'react-redux'
@@ -8,6 +8,7 @@ function Header({ color }) {
   const auth = useSelector(({ auth }) => auth)
   const gender = useSelector(({ app }) => app.gender)
   const { user, isAuthenticated } = auth
+  const [burgerClicked, setBurgerClicked] = useState(false)
 
   const getNumberOfItems = () => {
     if (isAuthenticated) {
@@ -26,10 +27,12 @@ function Header({ color }) {
   return (
     <header className={`header ${color}`}>
       <div className="container header__container">
-        <button className="burger btn-reset header__burger">
+        <button
+          className={`burger btn-reset header__burger ${burgerClicked ? 'opened' : ''}`}
+          onClick={() => setBurgerClicked(!burgerClicked)}>
           <span className="burger__line"></span>
         </button>
-        <Navbar />
+        <Navbar burgerClicked={burgerClicked} />
         <Link to="/" className="logo header__logo" aria-label="logo">
           Denim
         </Link>
@@ -39,16 +42,7 @@ function Header({ color }) {
               to={`/${auth.isAuthenticated ? 'profile' : 'logon'}`}
               className="shop-nav__link shop-nav__link--user"
               aria-label="Go to profile">
-              <svg
-                version="1.1"
-                id="Capa_1"
-                //  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                x="0px"
-                y="0px"
-                viewBox="0 0 512 512"
-                //  style="enable-background:new 0 0 512 512;"
-                // xml:space="preserve"
-              >
+              <svg version="1.1" x="0px" y="0px" viewBox="0 0 512 512">
                 <g>
                   <path
                     d="M437.02,330.98c-27.883-27.882-61.071-48.523-97.281-61.018C378.521,243.251,404,198.548,404,148
@@ -64,17 +58,7 @@ function Header({ color }) {
           <li className="shop-nav__item">
             <Link to="/cart" className="shop-nav__link cart" aria-label="Go to cart">
               <span className="cart__icon">
-                <svg
-                  version="1.1"
-                  id="Capa_1"
-                  // xmlns="http://www.w3.org/2000/svg"
-                  // xmlns:xlink="http://www.w3.org/1999/xlink"
-                  x="0px"
-                  y="0px"
-                  viewBox="0 0 204 204"
-                  // style="enable-background:new 0 0 208.955 208.955;"
-                  // xml:space="preserve"
-                >
+                <svg version="1.1" x="0px" y="0px" viewBox="0 0 204 204">
                   <path
                     d="M190.85,200.227L178.135,58.626c-0.347-3.867-3.588-6.829-7.47-6.829h-26.221V39.971c0-22.04-17.93-39.971-39.969-39.971
                     C82.437,0,64.509,17.931,64.509,39.971v11.826H38.27c-3.882,0-7.123,2.962-7.47,6.829L18.035,200.784
@@ -92,9 +76,9 @@ function Header({ color }) {
         </ul>
       </div>
       <div className="container">
-        <ul className="nav__list nav__list--flex">
+        <ul className="nav__list nav__list--flex" style={burgerClicked ? { left: 0 } : null}>
           <li className="nav__item">
-            <Link to={`/${gender}`} className="main-link nav__link">
+            <Link to={`/${gender}`} className="main-link nav__link nav__link--catalog">
               Одежда
             </Link>
           </li>

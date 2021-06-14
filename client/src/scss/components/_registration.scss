@@ -63,6 +63,10 @@ body {
   .login-btn {
     background-color: $dark !important;
     color: $white !important;
+
+    @include xs {
+      padding: 10px;
+    }
   }
 
   .error-msg {
@@ -90,6 +94,10 @@ body {
       background-color: $dark;
       color: $white;
       transition: background-color 0.3s, color 0.3s;
+    }
+
+    @include sm {
+      padding: 10px;
     }
   }
 }

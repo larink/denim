@@ -86,6 +86,7 @@
 .products-grid {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 
   &__item {
     width: 18.5%;

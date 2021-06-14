@@ -69,6 +69,10 @@
   display: flex;
   justify-content: center;
   margin-top: 100px;
+
+  @include sm {
+    flex-direction: column;
+  }
 }
 
 .cart-items {
@@ -126,6 +130,18 @@
 .cart-pay {
   border-left: 1px solid rgba($grey, 0.3);
   padding-left: 20px;
+
+  @include sm {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba($grey, 0.3);
+    padding-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   p {
     margin-top: 0;
   }

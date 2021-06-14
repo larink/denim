@@ -21,10 +21,21 @@
       background-color: transparent;
       border-bottom: 1px solid $white;
 
+      @include md {
+        border-color: $black;
+      }
+
+      @include xs {
+        width: 80%;
+      }
+
       &::placeholder {
         color: $white;
         font-size: 12px;
         font-weight: 700;
+        @include md {
+          color: $black;
+        }
       }
     }
 
@@ -33,6 +44,16 @@
       height: 16px;
       display: inline-block;
       margin-right: 10px;
+
+      @include xs {
+        display: none;
+      }
+
+      svg {
+        @include md {
+          fill: $dark;
+        }
+      }
     }
   }
 
