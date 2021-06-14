@@ -24,7 +24,8 @@ function useQuery() {
 function Catalog() {
   const dispatch = useDispatch()
   const { pathname } = useLocation()
-  const { items, searchedItems } = useSelector(({ products }) => products)
+  const genderFromPathname = pathname.slice(1).split('-')[0]
+  const { items } = useSelector(({ products }) => products)
   const sortBy = useSelector(({ filters }) => filters.sortBy)
   const gender = useSelector(({ app }) => app.gender)
 
@@ -32,7 +33,7 @@ function Catalog() {
   const page = query.get('page') || 1
 
   useEffect(() => {
-    dispatch(getCategories(gender))
+    dispatch(getCategories(genderFromPathname))
   }, [])
 
   const onSelectItem = (item) => {
@@ -67,15 +68,10 @@ function Catalog() {
                   {items && items.length !== 0 ? (
                     <>
                       <ul className="catalog-grid__content" data-grid-columns="4">
-                        {pathname.includes('search')
-                          ? searchedItems &&
-                            searchedItems.map((product) => (
-                              <Product key={product._id} {...product} gender={gender} />
-                            ))
-                          : items &&
-                            items.map((product) => (
-                              <Product key={product._id} {...product} gender={gender} />
-                            ))}
+                        {items &&
+                          items.map((product) => (
+                            <Product key={product._id} {...product} gender={gender} />
+                          ))}
                       </ul>
                       <Pagination page={page} />
                     </>

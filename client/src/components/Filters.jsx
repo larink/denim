@@ -11,6 +11,8 @@ function Filters({ sortBy, gender, page }) {
   const dispatch = useDispatch()
   const categories = useSelector(({ products }) => products.categories)
   let history = useHistory()
+  const { pathname } = useLocation()
+  const genderFromPathname = pathname.slice(1).split('-')[0]
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(99999)
   const [visbileCategory, setVisbileCategory] = useState(false)
@@ -24,6 +26,8 @@ function Filters({ sortBy, gender, page }) {
   const sortQuery = params.get('sort')
   const searchQuery = params.get('q')
   const genderQuery = params.get('gender')
+
+  console.log(!!searchQuery)
 
   const [filters, setFilters] = useState({
     category: categoryQuery,
@@ -68,17 +72,25 @@ function Filters({ sortBy, gender, page }) {
     if (parseInt(page) !== 1) query.page = page
 
     history.push({
-      pathname: `/${gender}`,
+      pathname: `/${genderFromPathname}`,
       search: qs.stringify(query),
     })
   }, [filters, page])
 
   useEffect(() => {
-    if (searchQuery) {
+    if (!!searchQuery) {
       dispatch(fetchItemsBySearch(searchQuery, genderQuery))
     } else {
       dispatch(
-        fetchItems(sortQuery, gender, page, categoryQuery, sizeQuery, priceQuery, brandQuery),
+        fetchItems(
+          sortQuery,
+          genderFromPathname,
+          page,
+          categoryQuery,
+          sizeQuery,
+          priceQuery,
+          brandQuery,
+        ),
       )
     }
   }, [page, sizeQuery, categoryQuery, priceQuery, brandQuery, sortQuery, searchQuery, genderQuery])
@@ -140,11 +152,13 @@ function Filters({ sortBy, gender, page }) {
       q: null,
       gender: null,
     })
+
+    if (pathname.includes('search')) history.push(`/${gender}`)
   }
 
   return (
     <div className="catalog-filters">
-      <button class="hide-filters btn-reset" onClick={resetFilters}>
+      <button className="hide-filters btn-reset" onClick={resetFilters}>
         Убрать фильтры
       </button>
       <div className={`catalog-filter ${visbileCategory ? 'catalog-filter--open' : ''}`}>

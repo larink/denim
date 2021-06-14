@@ -1,16 +1,20 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 function Pagination({ page }) {
   const gender = useSelector(({ app }) => app.gender)
+  const { pathname } = useLocation()
+  const genderFromPathname = pathname.slice(1).split('-')[0]
   const totalPages = useSelector(({ products }) => products.totalPages)
   const pages = []
 
   for (let index = 0; index < totalPages; index++) {
     pages.push(
       <li className="pagination__item" key={index}>
-        <Link to={`/${gender}?page=${index + 1}`} className="pagination__link ">
+        <Link
+          to={`/${genderFromPathname ? genderFromPathname : gender}?page=${index + 1}`}
+          className="pagination__link ">
           {index + 1}
         </Link>
       </li>,
@@ -33,7 +37,9 @@ function Pagination({ page }) {
     <ul className="pagination">
       {page > 1 ? (
         <li className="pagination__item">
-          <Link to={`/${gender}?page=${prevPage()}`} className="pagination__link">
+          <Link
+            to={`/${genderFromPathname ? genderFromPathname : gender}?page=${prevPage()}`}
+            className="pagination__link">
             Назад
           </Link>
         </li>
@@ -42,7 +48,9 @@ function Pagination({ page }) {
       )}
       {pages}
       <li className="pagination__item">
-        <Link to={`/${gender}?page=${nextPage()}`} className="pagination__link">
+        <Link
+          to={`/${genderFromPathname ? genderFromPathname : gender}?page=${nextPage()}`}
+          className="pagination__link">
           Вперед
         </Link>
       </li>
