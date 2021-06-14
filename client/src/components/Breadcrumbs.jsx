@@ -65,37 +65,7 @@ function Breadcrumbs({ crumbs, category }) {
 
   return (
     <div className="breadcrumbs">
-      <div className="container container-narrow">
-        {breadCrumbView()}
-        {/* <ul className="breadcrumbs__list"> */}
-        {/* <li className="breadcrumbs__item">
-            <Link to="/" className="breadcrumbs__link">
-              Home
-            </Link>
-          </li>
-          {pathnames &&
-            pathnames.map((item, index) => {
-              console.log(item)
-              return (
-                <li className="breadcrumbs__item" key={index}>
-                  <Link to={item} className="breadcrumbs__link">
-                    {item}
-                  </Link>
-                </li>
-              )
-            })} */}
-
-        {/* {crumbs.map(({ name, path }, key) =>
-            key + 1 === crumbs.length ? (
-              <span key={key}>{name}</span>
-            ) : (
-              <Link key={key} to={path}>
-                {name}
-              </Link>
-            ),
-          )} */}
-        {/* </ul> */}
-      </div>
+      <div className="container container-narrow">{breadCrumbView()}</div>
     </div>
   )
 }

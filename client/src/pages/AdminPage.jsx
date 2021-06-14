@@ -3,13 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import SecondHeader from '../components/SecondHeader'
 import { getPayments, getUser, updateUser } from '../redux/actions/auth'
-import {
-  createCategory,
-  createProduct,
-  getCategories,
-  getItems,
-  updateProduct,
-} from '../redux/actions/products'
+import { createCategory, createProduct, getCategories, getItems } from '../redux/actions/products'
 import Product from '../components/Product'
 import AdminPagination from '../components/AdminPaginaion'
 import { validatePayment } from '../utils/helpers'
@@ -30,7 +24,7 @@ function AdminPage() {
 
   const [categoryForm, setCategoryForm] = useState({
     name: '',
-    gender: '',
+    gender: 'men',
   })
 
   const [updateUserRoleForm, setUpdateUserRoleForm] = useState({
@@ -66,12 +60,8 @@ function AdminPage() {
   })
 
   useEffect(() => {
-    dispatch(getCategories(productForm.gender))
+    dispatch(getCategories(productForm.gender ? productForm.gender : gender))
   }, [productForm.gender])
-
-  useEffect(() => {
-    dispatch(getCategories(changeProductForm.gender))
-  }, [changeProductForm.gender])
 
   useEffect(() => {
     dispatch(getItems())
@@ -111,7 +101,7 @@ function AdminPage() {
       countInStock: productForm.countInStock,
     }
 
-    const { valid, message } = validatePayment(product)
+    const { valid, message } = validatePayment(productForm)
 
     if (!valid) {
       alert(message)
@@ -121,40 +111,6 @@ function AdminPage() {
     if (valid) alert('Товар успешно создан')
 
     dispatch(createProduct(product))
-    setProductForm({
-      name: '',
-      imageUrl: '',
-      description: '',
-      price: 0,
-      gender: '',
-      brand: '',
-      color: '',
-      sizes: [],
-      categoryProduct: '',
-      countInStock: 1,
-    })
-  }
-  const changeProductFromSubmitHandler = (e) => {
-    e.preventDefault()
-
-    const product = {
-      id: changeProductForm.id,
-      name: changeProductForm.name,
-      imageUrl: changeProductForm.imageUrl,
-      descr: changeProductForm.description,
-      price: changeProductForm.price,
-      gender: changeProductForm.gender,
-      brand: changeProductForm.brand,
-      color: changeProductForm.color,
-      sizes:
-        changeProductForm.sizes.length >= 1
-          ? changeProductForm.sizes.split(',').map((size) => parseInt(size))
-          : [],
-      category: changeProductForm.categoryProduct,
-      countInStock: changeProductForm.countInStock,
-    }
-
-    dispatch(updateProduct(gender, product))
     setProductForm({
       name: '',
       imageUrl: '',
@@ -247,9 +203,10 @@ function AdminPage() {
                   <div className="">
                     Заказанные товары:
                     <ul className="payment__products">
-                      {payment.products.map((product) => (
-                        <Product key={product.id} {...product} />
-                      ))}
+                      {payment &&
+                        payment.products.map((product) => (
+                          <Product key={product.id} {...product} />
+                        ))}
                     </ul>
                   </div>
                 </div>
@@ -347,7 +304,6 @@ function AdminPage() {
             </label>
             <label htmlFor="" className="admin-form__label">
               Категория товара:
-              {/* <input type="text" name="category" /> */}
               <select
                 className="admin-form__select"
                 className="admin-form__input"

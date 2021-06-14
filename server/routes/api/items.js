@@ -142,7 +142,7 @@ router.get('/products/:gender/products_by_id', async (req, res) => {
  * @access  Public
  */
 
-router.get('/search', auth, async (req, res) => {
+router.get('/search', async (req, res) => {
   const { q, gender } = req.query;
 
   try {
@@ -154,7 +154,11 @@ router.get('/search', auth, async (req, res) => {
 
     if (!items) throw Error('Мы все посмотрели, но ничего не нашли');
 
-    res.status(200).json(items);
+    res.status(200).json({
+      items,
+      currentPage: 1,
+      totalPages: 1,
+    });
   } catch (e) {
     res.status(404).json({ msg: e.message });
   }

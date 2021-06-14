@@ -5,9 +5,11 @@ const router = new Router();
 
 router.get('/:gender', async (req, res) => {
   let filters = { gender: req.params.gender };
+
   if (req.query.id) {
     filters = { _id: req.query.id, gender: req.params.gender };
   }
+  console.log(filters);
 
   try {
     const categories = await Category.find(filters);
@@ -17,16 +19,6 @@ router.get('/:gender', async (req, res) => {
     res.status(400).json({ msg: e.message });
   }
 });
-
-// router.get('/:id', async (req, res) => {
-//   try {
-//     const categories = await Category.findById(req.params.id);
-
-//     res.status(200).json(categories);
-//   } catch (e) {
-//     res.status(400).json({ msg: e.message });
-//   }
-// });
 
 router.post('/', async (req, res) => {
   try {

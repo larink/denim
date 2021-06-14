@@ -44,17 +44,7 @@ function Search() {
     <>
       <button className="search__btn btn-reset" aria-label="Find" onClick={handleVisible}>
         <span>
-          <svg
-            version="1.1"
-            id="Capa_1"
-            // xmlns="http://www.w3.org/2000/svg"
-            // xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 512.005 512.005"
-            // style="enable-background:new 0 0 512.005 512.005;"
-            // xml:space="preserve"
-          >
+          <svg version="1.1" x="0px" y="0px" viewBox="0 0 512.005 512.005">
             <g>
               <path
                 d="M505.749,475.587l-145.6-145.6c28.203-34.837,45.184-79.104,45.184-127.317c0-111.744-90.923-202.667-202.667-202.667

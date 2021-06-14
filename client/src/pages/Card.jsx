@@ -25,8 +25,6 @@ function Card() {
   const [logonAlert, setLogonAlert] = useState(false)
   const [addButtonPressed, setAddButtonPressed] = useState(false)
 
-  // console.log(product.brand && product.brand.replace(/\s/g, ''))
-
   useEffect(() => {
     dispatch(fetchItem(params.id, currentSize))
     if (isLoaded) dispatch(getCategory(gender, product.category))
@@ -123,7 +121,7 @@ function Card() {
                       <div className="card-info">
                         <h3 className="card-info__title">{product.name}</h3>
                         {/* <Link
-                          to={`/brands/${product.brand && product.brand.trim()}`}
+                          to={`/brands/${product.brand && validateBrand(product.brand)}`}
                           className="card-info__brand main-link">
                           {product.brand}s
                         </Link> */}
