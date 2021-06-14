@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 import {
   AUTH_ERROR,
   GET_PAYMENTS,
@@ -12,30 +12,28 @@ import {
   USER_LOADED,
   USER_LOADING,
   UPDATE_USER,
-  PROFILE_UPDATED,
   SEARCH_USER,
-} from '../constants'
-import { returnErrors } from './error'
+} from '../constants';
+import { returnErrors } from './error';
 
 export const loadUser = () => (dispatch, getState) => {
-  dispatch({ type: USER_LOADING })
+  dispatch({ type: USER_LOADING });
 
   axios
     .get('http://localhost:5000/api/auth/user', tokenConfig(getState))
     .then(({ data }) => dispatch(setUserLoaded(data)))
     .catch((err) => {
-      console.log(err)
-      dispatch(returnErrors(err.response.data, err.response.status))
+      dispatch(returnErrors(err.response.data, err.response.status));
       dispatch({
         type: AUTH_ERROR,
-      })
-    })
-}
+      });
+    });
+};
 
 export const setUserLoaded = (user) => ({
   type: USER_LOADED,
   payload: user,
-})
+});
 
 export const register =
   ({ name, email, password }) =>
@@ -44,9 +42,9 @@ export const register =
       headers: {
         'Content-Type': 'application/json',
       },
-    }
+    };
 
-    const body = JSON.stringify({ name, email, password })
+    const body = JSON.stringify({ name, email, password });
 
     axios
       .post('http://localhost:5000/api/auth/register', body, config)
@@ -54,15 +52,17 @@ export const register =
         dispatch({
           type: REGISTER_SUCCESS,
           payload: data,
-        }),
+        })
       )
       .catch((err) => {
-        dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'))
+        dispatch(
+          returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
+        );
         dispatch({
           type: REGISTER_FAIL,
-        })
-      })
-  }
+        });
+      });
+  };
 
 export const login =
   ({ email, password }) =>
@@ -71,9 +71,9 @@ export const login =
       headers: {
         'Content-Type': 'application/json',
       },
-    }
+    };
 
-    const body = JSON.stringify({ email, password })
+    const body = JSON.stringify({ email, password });
 
     axios
       .post('http://localhost:5000/api/auth/login', body, config)
@@ -81,34 +81,43 @@ export const login =
         dispatch({
           type: LOGIN_SUCCESS,
           payload: data,
-        }),
+        })
       )
       .catch((err) => {
-        dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'))
+        dispatch(
+          returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
+        );
         dispatch({
           type: LOGIN_FAIL,
-        })
-      })
-  }
+        });
+      });
+  };
 
 export const getPayments = (page) => (dispatch, getState) => {
   axios
-    .get(`http://localhost:5000/api/users/payments?page=${page}`, tokenConfig(getState))
+    .get(
+      `http://localhost:5000/api/users/payments?page=${page}`,
+      tokenConfig(getState)
+    )
     .then(({ data }) => {
-      dispatch(getAllPayments(data))
-    })
-}
+      dispatch(getAllPayments(data));
+    });
+};
 
 export const setAddress = (address) => (dispatch, getState) => {
   axios
-    .put(`http://localhost:5000/api/users/address`, address, tokenConfig(getState))
+    .put(
+      `http://localhost:5000/api/users/address`,
+      address,
+      tokenConfig(getState)
+    )
     .then(({ data }) => {
       dispatch({
         type: UPDATE_USER,
         payload: data,
-      })
-    })
-}
+      });
+    });
+};
 
 export const updateUser = (body) => (dispatch, getState) => {
   axios
@@ -117,46 +126,54 @@ export const updateUser = (body) => (dispatch, getState) => {
       dispatch({
         type: UPDATE_USER,
         payload: data,
-      })
-    })
-}
+      });
+    });
+};
 
 export const getUser = (name) => (dispatch, getState) => {
   axios
-    .get(`http://localhost:5000/api/users/search?q=${name}`, tokenConfig(getState))
+    .get(
+      `http://localhost:5000/api/users/search?q=${name}`,
+      tokenConfig(getState)
+    )
     .then(({ data }) => {
-      dispatch({ type: SEARCH_USER, payload: data })
-    })
-}
+      dispatch({ type: SEARCH_USER, payload: data });
+    });
+};
 
 export const logout = () => {
   return {
     type: LOGOUT_SUCCESS,
-  }
-}
+  };
+};
+
+export const getUserOrders = (payload) => ({
+  type: GET_USER_ORDERS,
+  payload,
+});
 
 export const getAllPayments = (payload) => ({
   type: GET_PAYMENTS,
   payload,
-})
+});
 
 export const setUserAddress = (payload) => ({
   type: SET_USER_ADDRESS,
   payload,
-})
+});
 
 export const tokenConfig = (getState) => {
-  const token = getState().auth.token
+  const token = getState().auth.token;
 
   const config = {
     headers: {
       'Content-type': 'application/json',
     },
-  }
+  };
 
   if (token !== null) {
-    config.headers['x-auth-token'] = token
+    config.headers['x-auth-token'] = token;
   }
 
-  return config
-}
+  return config;
+};

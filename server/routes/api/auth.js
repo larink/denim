@@ -46,7 +46,6 @@ router.post('/login', async (req, res) => {
         email: user.email,
         cartItems: user.cartItems,
         history: user.history,
-        address: user.address,
       },
     });
   } catch (e) {
@@ -134,7 +133,6 @@ router.post('/register', async (req, res) => {
         email: savedUser.email,
         cartItems: savedUser.cartItems,
         history: savedUser.history,
-        address: savedUser.address,
       },
     });
   } catch (e) {

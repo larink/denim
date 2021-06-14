@@ -370,10 +370,7 @@ function AdminPage() {
                 onChange={(e) => changeHandler(e)}
               />
             </label>
-            <button
-              className="btn-reset global-btn"
-              type="submit"
-              onClick={productFromSubmitHandler}>
+            <button type="submit" onClick={productFromSubmitHandler}>
               Добавить
             </button>
           </form>
@@ -402,10 +399,7 @@ function AdminPage() {
                 <option value="women">Женский</option>
               </select>
             </label>
-            <button
-              className="btn-reset global-btn"
-              type="submit"
-              onClick={categoryFromSubmitHandler}>
+            <button type="submit" onClick={categoryFromSubmitHandler}>
               Добавить
             </button>
           </form>
@@ -421,9 +415,7 @@ function AdminPage() {
               onChange={(e) => changeHandler(e)}
             />
           </label>
-          <button className="btn-reset global-btn" onClick={(e) => findUser(e)}>
-            Найти
-          </button>
+          <button onClick={(e) => findUser(e)}>Найти</button>
           <label htmlFor="" className="admin-form__label">
             Роль
             <select
@@ -435,7 +427,7 @@ function AdminPage() {
               <option value="admin">Админ</option>
             </select>
           </label>
-          <button className="btn-reset global-btn" type="submit" onClick={roleFormSubmitHandler}>
+          <button type="submit" onClick={roleFormSubmitHandler}>
             Изменить
           </button>
         </form>

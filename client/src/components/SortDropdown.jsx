@@ -1,15 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 function SortDropdown({ items, onSelectItem, activeSortType }) {
-  const [visiblePopup, setVisiblePopup] = useState(false)
+  const [visiblePopup, setVisiblePopup] = useState(false);
 
   const handleSortType = (item) => {
-    onSelectItem(item.type)
-  }
+    onSelectItem(item.type);
+    setVisiblePopup(!visiblePopup);
+  };
 
   return (
     <div className="custom-select">
-      <div className="custom-select__top" onClick={() => setVisiblePopup(!visiblePopup)}>
+      <div
+        className="custom-select__top"
+        onClick={() => setVisiblePopup(!visiblePopup)}
+      >
         Сортировать по:
       </div>
       {visiblePopup && (
@@ -18,9 +22,12 @@ function SortDropdown({ items, onSelectItem, activeSortType }) {
             {items &&
               items.map((item, index) => (
                 <li
-                  className={`custom-select__item ${item.type === activeSortType ? 'active' : ''}`}
+                  className={`custom-select__item ${
+                    item.type === activeSortType ? 'active' : ''
+                  }`}
                   key={index}
-                  onClick={() => handleSortType(item)}>
+                  onClick={() => handleSortType(item)}
+                >
                   {item.name}
                 </li>
               ))}
@@ -28,7 +35,7 @@ function SortDropdown({ items, onSelectItem, activeSortType }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default SortDropdown
+export default SortDropdown;

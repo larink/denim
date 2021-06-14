@@ -219,8 +219,15 @@
 
   &__label {
     width: 100%;
+    max-width: 350px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-self: center;
+
+    span {
+      display: inline-block;
+      margin-bottom: 7px;
+    }
 
     &:not(:last-child) {
       margin-bottom: 15px;
@@ -228,7 +235,7 @@
   }
 
   &__input {
-    width: 70%;
+    width: 100%;
     padding: 5px;
   }
 

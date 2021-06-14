@@ -1,22 +1,23 @@
-import React, { useCallback, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { NavLink } from 'react-router-dom'
-import { setGenderState } from '../redux/actions/filters'
+import React, { useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import { setGenderState } from '../redux/actions/filters';
 
 function Navbar({ burgerClicked }) {
-  const dispatch = useDispatch()
-  const [genderName, setGenderName] = useState('')
+  const dispatch = useDispatch();
+
+  const [genderName, setGenderName] = useState('');
 
   const getGenderName = useCallback(
     (e) => {
-      const receivedGender = e.target.href.split('/')[3].split('-')[0]
+      const receivedGender = e.target.href.split('/')[3].split('-')[0];
 
-      setGenderName(receivedGender)
+      setGenderName(receivedGender);
 
-      dispatch(setGenderState(receivedGender))
+      dispatch(setGenderState(receivedGender));
     },
-    [genderName],
-  )
+    [genderName]
+  );
 
   return (
     <nav className="nav header__nav" style={burgerClicked ? { left: 0 } : null}>
@@ -26,7 +27,8 @@ function Navbar({ burgerClicked }) {
             to="/women-home"
             className="main-link nav__link"
             activeClassName="main-link--active"
-            onClick={getGenderName}>
+            onClick={getGenderName}
+          >
             Женщины
           </NavLink>
         </li>
@@ -35,14 +37,15 @@ function Navbar({ burgerClicked }) {
             to="/men-home"
             className="main-link nav__link"
             activeClassName="main-link--active"
-            onClick={getGenderName}>
+            onClick={getGenderName}
+          >
             Мужчины
           </NavLink>
         </li>
       </ul>
       <button className="nav__close btn-reset">close</button>
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

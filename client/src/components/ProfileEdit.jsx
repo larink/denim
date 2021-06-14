@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { updateUser } from '../redux/actions/auth'
+import { validatePayment } from '../utils/helpers'
 
 function ProfileEdit() {
   const dispatch = useDispatch()
