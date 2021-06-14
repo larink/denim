@@ -14,7 +14,7 @@ const ItemSchema = new Schema({
   price: { type: Number, required: true },
   gender: { type: String, required: true },
   brand: { type: String, required: true },
-  color: { type: String, required: true },
+  color: { type: String },
   sizes: {
     type: Array,
     default: [],
