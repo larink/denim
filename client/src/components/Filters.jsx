@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useLocation } from 'react-router'
-import qs from 'qs'
+import qs, { parse } from 'qs'
 import { fetchItems } from '../redux/actions/products'
 
 const sizes = [46, 48, 50, 52, 54, 56]
@@ -120,7 +120,9 @@ function Filters({ sortBy, gender, page }) {
             {sizes &&
               sizes.map((size) => (
                 <li
-                  className={`catalog-filter__item ${size === filters.size ? 'active' : ''}`}
+                  className={`catalog-filter__item ${
+                    size === parseInt(filters.size) ? 'active' : ''
+                  }`}
                   key={size}
                   onClick={() => getItemsBySize(size)}>
                   <span>{size}</span>

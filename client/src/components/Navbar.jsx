@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { NavLink } from 'react-router-dom'
 import { setGenderState } from '../redux/actions/filters'
 
 function Navbar({ burgerClicked }) {
   const dispatch = useDispatch()
+  const [genderName, setGenderName] = useState('')
 
-  const getGenderName = (e) => {
-    const genderName = e.target.href.split('/')[3].split('-')[0]
-    console.log(genderName)
-    if (genderName !== 'search') dispatch(setGenderState(genderName))
-  }
+  const getGenderName = useCallback(
+    (e) => {
+      const receivedGender = e.target.href.split('/')[3].split('-')[0]
+
+      setGenderName(receivedGender)
+
+      dispatch(setGenderState(receivedGender))
+    },
+    [genderName],
+  )
 
   return (
     <nav className="nav header__nav" style={burgerClicked ? { left: 0 } : null}>
