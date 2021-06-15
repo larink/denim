@@ -46,6 +46,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         cartItems: user.cartItems,
         history: user.history,
+        address: user.address || {},
       },
     });
   } catch (e) {
@@ -133,6 +134,7 @@ router.post('/register', async (req, res) => {
         email: savedUser.email,
         cartItems: savedUser.cartItems,
         history: savedUser.history,
+        address: savedUser.address || {},
       },
     });
   } catch (e) {
@@ -149,8 +151,17 @@ router.post('/register', async (req, res) => {
 router.get('/user', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
+    const userWithAddress = {
+      _id: user._id,
+      role: user.role,
+      name: user.name,
+      email: user.email,
+      cartItems: user.cartItems,
+      history: user.history,
+      address: user.address || {},
+    };
     if (!user) throw Error('User does not exist');
-    res.json(user);
+    res.json(userWithAddress);
   } catch (e) {
     res.status(400).json({ msg: e.message });
   }

@@ -109,13 +109,13 @@ router.get('/removeFromCart', async (req, res) => {
       let array = cart.map((item) => {
         return item.id;
       });
-      if (err) console.log(err);
 
       User.find({ _id: { $in: array } })
         .populate('name')
         .exec((err, cartDetail) => {
           return res.status(200).json({
             cart,
+            cartDetail,
           });
         });
 

@@ -16,7 +16,7 @@ import {
   UPDATE_USER,
   USER_LOADED,
   USER_LOADING,
-} from '../constants';
+} from '../constants'
 
 const initialState = {
   token: localStorage.getItem('token'),
@@ -26,7 +26,7 @@ const initialState = {
   payments: {},
   admin: {},
   cartDetail: [],
-};
+}
 
 const auth = (state = initialState, action) => {
   switch (action.type) {
@@ -34,7 +34,7 @@ const auth = (state = initialState, action) => {
       return {
         ...state,
         isLoading: true,
-      };
+      }
     case USER_LOADED:
       return {
         ...state,
@@ -42,34 +42,34 @@ const auth = (state = initialState, action) => {
         isLoading: false,
         user: action.payload,
         payments: {},
-      };
+      }
     case LOGIN_SUCCESS:
     case REGISTER_SUCCESS:
-      localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('token', action.payload.token)
       return {
         ...state,
         ...action.payload,
         isAuthenticated: true,
         isLoading: false,
-      };
+      }
     case UPDATE_USER:
       return {
         ...state,
         user: { ...action.payload },
         isAuthenticated: true,
         isLoading: false,
-      };
+      }
     case AUTH_ERROR:
     case LOGIN_FAIL:
     case LOGOUT_SUCCESS:
     case REGISTER_FAIL:
-      localStorage.removeItem('token');
+      localStorage.removeItem('token')
       return {
         token: null,
         isAuthenticated: false,
         isLoading: false,
         user: null,
-      };
+      }
     case SET_CART_ITEM:
       return {
         ...state,
@@ -77,7 +77,7 @@ const auth = (state = initialState, action) => {
           ...state.user,
           cartItems: action.payload,
         },
-      };
+      }
     case REMOVE_CART_ITEM:
       return {
         ...state,
@@ -85,12 +85,13 @@ const auth = (state = initialState, action) => {
           ...state.user,
           cartItems: action.payload.cart,
         },
-      };
+        cartDetail: action.payload.cartDetail,
+      }
     case GET_CART_ITEMS:
       return {
         ...state,
         cartDetail: action.payload,
-      };
+      }
     case ON_SUCCESS_BUY:
       return {
         ...state,
@@ -99,7 +100,7 @@ const auth = (state = initialState, action) => {
           cartItems: action.payload.cartItems,
         },
         cartDetail: action.payload.cartDetail,
-      };
+      }
     case GET_USER_ORDERS:
       return {
         ...state,
@@ -107,7 +108,7 @@ const auth = (state = initialState, action) => {
           ...state.user,
           orders: action.payload,
         },
-      };
+      }
     case SET_USER_ADDRESS:
       return {
         ...state,
@@ -115,12 +116,12 @@ const auth = (state = initialState, action) => {
           ...state.user,
           address: action.payload.address,
         },
-      };
+      }
     case GET_PAYMENTS:
       return {
         ...state,
         payments: action.payload,
-      };
+      }
     case SEARCH_USER:
       return {
         ...state,
@@ -128,10 +129,10 @@ const auth = (state = initialState, action) => {
           ...state.admin,
           searchedUser: action.payload,
         },
-      };
+      }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default auth;
+export default auth
